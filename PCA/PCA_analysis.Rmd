@@ -12,7 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## R Markdown
 
 ```{r libraries, message=FALSE, warning=FALSE}
-setwd("C:/Users/khiltunen/Documents/R/PCA")
+setwd("C:/Users/khiltunen/Documents/R/meSIT_seq_and_scEpiAge_validation/PCA")
+
 library(tidyverse) #contains ggplot2 dplyr and tidyR for plotting
 library(stats)
 library(impute) #for data imputation
@@ -28,10 +29,10 @@ library(methylKit) #for analysing coverage
 
 ## Load data
 ```{r load data}
-metaDataFile<-"~/R/PCA/Meta_data_file.xlsx"
+metaDataFile<-"Meta_data_file.xlsx"
 
 #read the mouse clock sites and create a dataframe with the sites
-msClock <- read.table("~/R/PCA/msClockSites_mm10.bed", header = FALSE, 
+msClock <- read.table("msClockSites_mm10.bed", header = FALSE, 
                       sep = "\t",stringsAsFactors=FALSE, quote="")
 
 # Replace InputFolder with actual data
