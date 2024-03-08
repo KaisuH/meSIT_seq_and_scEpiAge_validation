@@ -23,11 +23,12 @@ library(viridis) #for creating colors in the plots (does not work yet)
 library(tools) #for extracting the names
 library(tibble) #for replacing rownames
 library(methylKit) #for analysing coverage
+library(gridExtra) #for arranging the combined plot
 ```
 
-# PCA analysis
+# PCA analysis of Custom library samples
 
-## Load data
+## Load data from COV-files
 ```{r load data}
 metaDataFile<-"Meta_data_file.xlsx"
 
@@ -37,7 +38,7 @@ msClock <- read.table("msClockSites_mm10.bed", header = FALSE,
 
 # Replace InputFolder with actual data
 # Using the custom enrichment library
-myInputFolder = "~/R/euler_exports/S183/grcm38"
+myInputFolder = "../coverage_analysis/COV-files/S183"
 ```
 
 ## Functions for analysis
@@ -203,7 +204,7 @@ plot2 <- function(pc_scores_list){
  
 ```
 
-## PCA of all samples
+## PCA of all tissue samples
 
 ```{r PCA analysis}
 # Create dataframe by reading all the sample files
@@ -218,7 +219,7 @@ pc_scores <- df_full %>%
 # Plot
 plot1(pc_scores)
 ```
-## PCA of blood
+## PCA of blood samples
 
 ```{r}
 #extract tissue txpe
@@ -237,6 +238,7 @@ plot1(pc_scores_blood)
 blood_plot<-plot2(pc_scores_blood)
 blood_plot
 ```
+## PCA of BAT samples
 ```{r}
 ### BAT data ###
 BAT_columns <- c(which(tissueType == "BAT"));
@@ -250,6 +252,7 @@ pc_scores_BAT <- df_full[,BAT_columns] %>%
 BAT_plot <- plot2(pc_scores_BAT)
 BAT_plot
 ```
+## PCA of liver samples
 ```{r}
 ### Liver data ###
 liver_columns <- c(which(tissueType == "Liver"));
@@ -263,6 +266,7 @@ pc_scores_liver <- df_full[,liver_columns] %>%
 liver_plot <- plot2(pc_scores_liver)
 liver_plot
 ```
+## PCA of scAT samples
 ```{r}
 ### scAT data ###
 scAT_columns <- c(which(tissueType == "scAT"));
@@ -276,7 +280,7 @@ pc_scores_scAT <- df_full[,scAT_columns] %>%
 scAT_plot <- plot2(pc_scores_scAT)
 scAT_plot
 ```
-
+## Combined plot
 ```{r}
 
 # Arrange the plots using grid.arrange
