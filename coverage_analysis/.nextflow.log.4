@@ -1,0 +1,447 @@
+Dec-08 15:43:55.371 [main] DEBUG nextflow.cli.Launcher - Setting HTTP proxy: ProxyConfig[protocol=http; host=proxy.ethz.ch; port=3128]
+Dec-08 15:43:55.448 [main] DEBUG nextflow.cli.Launcher - Setting HTTPS proxy: ProxyConfig[protocol=https; host=proxy.ethz.ch; port=3128]
+Dec-08 15:43:55.448 [main] DEBUG nextflow.cli.Launcher - Setting http proxy: ProxyConfig[protocol=http; host=proxy.ethz.ch; port=3128]
+Dec-08 15:43:55.448 [main] DEBUG nextflow.cli.Launcher - Setting https proxy: ProxyConfig[protocol=https; host=proxy.ethz.ch; port=3128]
+Dec-08 15:43:55.448 [main] DEBUG nextflow.cli.Launcher - Setting ftp proxy: ProxyConfig[protocol=ftp; host=proxy.ethz.ch; port=3128]
+Dec-08 15:43:55.448 [main] DEBUG nextflow.cli.Launcher - $> nextflow /cluster/work/nme/software/apps/nextflow/nf_pipelines/nf_bisulfite_WGBS_dev2 --genome GRCm39 '--bismark_args=-X 1500 --pbat' '--trim_galore_args=--clip_r1 10 --clip_r2 33 --three_prime_clip_R1 1 --three_prime_clip_R2 10  --paired -a CTATCTCTTATA -a2 CTGTCTCTTATA' ../subfolder_1/01_BAT_1_C_1.fq.gz ../subfolder_1/01_BAT_1_C_2.fq.gz ../subfolder_1/01_Blood_3_C_1.fq.gz ../subfolder_1/01_Blood_3_C_2.fq.gz ../subfolder_1/01_Liver_2_C_1.fq.gz ../subfolder_1/01_Liver_2_C_2.fq.gz ../subfolder_1/01_scAT_1_C_1.fq.gz ../subfolder_1/01_scAT_1_C_2.fq.gz ../subfolder_1/02_BAT_1_C_1.fq.gz ../subfolder_1/02_BAT_1_C_2.fq.gz ../subfolder_1/02_Blood_3_C_1.fq.gz ../subfolder_1/02_Blood_3_C_2.fq.gz ../subfolder_1/02_Liver_2_C_1.fq.gz ../subfolder_1/02_Liver_2_C_2.fq.gz ../subfolder_1/02_scAT_1_C_1.fq.gz ../subfolder_1/02_scAT_1_C_2.fq.gz ../subfolder_1/03_BAT_1_C_1.fq.gz ../subfolder_1/03_BAT_1_C_2.fq.gz ../subfolder_1/03_Liver_2_C_1.fq.gz ../subfolder_1/03_Liver_2_C_2.fq.gz ../subfolder_1/04_BAT_1_C_1.fq.gz ../subfolder_1/04_BAT_1_C_2.fq.gz ../subfolder_1/04_Liver_2_C_1.fq.gz ../subfolder_1/04_Liver_2_C_2.fq.gz ../subfolder_1/05_BAT_1_C_1.fq.gz ../subfolder_1/05_BAT_1_C_2.fq.gz ../subfolder_1/05_Blood_3_C_1.fq.gz ../subfolder_1/05_Blood_3_C_2.fq.gz ../subfolder_1/05_Liver_2_C_1.fq.gz ../subfolder_1/05_Liver_2_C_2.fq.gz ../subfolder_1/05_scAT_1_C_1.fq.gz ../subfolder_1/05_scAT_1_C_2.fq.gz ../subfolder_1/06_BAT_1_C_1.fq.gz ../subfolder_1/06_BAT_1_C_2.fq.gz ../subfolder_1/06_Blood_3_C_1.fq.gz ../subfolder_1/06_Blood_3_C_2.fq.gz ../subfolder_1/06_Liver_2_C_1.fq.gz ../subfolder_1/06_Liver_2_C_2.fq.gz ../subfolder_1/06_scAT_1_C_1.fq.gz ../subfolder_1/06_scAT_1_C_2.fq.gz ../subfolder_1/07_BAT_1_C_1.fq.gz ../subfolder_1/07_BAT_1_C_2.fq.gz ../subfolder_1/07_Blood_3_C_1.fq.gz ../subfolder_1/07_Blood_3_C_2.fq.gz ../subfolder_1/07_Liver_2_C_1.fq.gz ../subfolder_1/07_Liver_2_C_2.fq.gz ../subfolder_1/07_scAT_1_C_1.fq.gz ../subfolder_1/07_scAT_1_C_2.fq.gz ../subfolder_1/08_BAT_1_C_1.fq.gz ../subfolder_1/08_BAT_1_C_2.fq.gz ../subfolder_1/08_Blood_3_C_1.fq.gz ../subfolder_1/08_Blood_3_C_2.fq.gz ../subfolder_1/08_Liver_2_C_1.fq.gz ../subfolder_1/08_Liver_2_C_2.fq.gz ../subfolder_1/08_scAT_1_C_1.fq.gz ../subfolder_1/08_scAT_1_C_2.fq.gz ../subfolder_1/09_BAT_1_C_1.fq.gz ../subfolder_1/09_BAT_1_C_2.fq.gz ../subfolder_1/10_BAT_1_C_1.fq.gz ../subfolder_1/10_BAT_1_C_2.fq.gz ../subfolder_1/11_BAT_1_C_1.fq.gz ../subfolder_1/11_BAT_1_C_2.fq.gz ../subfolder_1/11_BAT_3_C_1.fq.gz ../subfolder_1/11_BAT_3_C_2.fq.gz ../subfolder_1/12_BAT_1_C_1.fq.gz ../subfolder_1/12_BAT_1_C_2.fq.gz ../subfolder_1/12_BAT_3_C_1.fq.gz ../subfolder_1/12_BAT_3_C_2.fq.gz ../subfolder_1/13_BAT_3_C_1.fq.gz ../subfolder_1/13_BAT_3_C_2.fq.gz ../subfolder_1/13_Blood_2_C_1.fq.gz ../subfolder_1/13_Blood_2_C_2.fq.gz ../subfolder_1/13_scAT_1_C_1.fq.gz ../subfolder_1/13_scAT_1_C_2.fq.gz ../subfolder_1/14_BAT_3_C_1.fq.gz ../subfolder_1/14_BAT_3_C_2.fq.gz ../subfolder_1/14_Blood_2_C_1.fq.gz ../subfolder_1/14_Blood_2_C_2.fq.gz ../subfolder_1/14_scAT_1_C_1.fq.gz ../subfolder_1/14_scAT_1_C_2.fq.gz ../subfolder_1/15_BAT_3_C_1.fq.gz ../subfolder_1/15_BAT_3_C_2.fq.gz ../subfolder_1/15_Blood_2_C_1.fq.gz ../subfolder_1/15_Blood_2_C_2.fq.gz ../subfolder_1/15_Liver_1_C_1.fq.gz ../subfolder_1/15_Liver_1_C_2.fq.gz ../subfolder_1/15_scAT_1_C_1.fq.gz ../subfolder_1/15_scAT_1_C_2.fq.gz ../subfolder_1/16_BAT_3_C_1.fq.gz ../subfolder_1/16_BAT_3_C_2.fq.gz ../subfolder_1/16_Blood_2_C_1.fq.gz ../subfolder_1/16_Blood_2_C_2.fq.gz ../subfolder_1/16_Liver_1_C_1.fq.gz ../subfolder_1/16_Liver_1_C_2.fq.gz ../subfolder_1/16_scAT_1_C_1.fq.gz ../subfolder_1/16_scAT_1_C_2.fq.gz
+Dec-08 15:43:55.618 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 23.10.0
+Dec-08 15:43:55.643 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/cluster/home/khiltunen/.nextflow/plugins; core-plugins: nf-amazon@2.1.4,nf-azure@1.3.2,nf-cloudcache@0.3.0,nf-codecommit@0.1.5,nf-console@1.0.6,nf-ga4gh@1.1.0,nf-google@1.8.3,nf-tower@1.6.3,nf-wave@1.0.0
+Dec-08 15:43:55.657 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Dec-08 15:43:55.658 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Dec-08 15:43:55.662 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+Dec-08 15:43:55.680 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Dec-08 15:43:55.706 [main] DEBUG nextflow.config.ConfigBuilder - Found config base: /cluster/work/nme/software/apps/nextflow/nf_pipelines/nextflow.config
+Dec-08 15:43:55.708 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /cluster/work/nme/software/apps/nextflow/nf_pipelines/nextflow.config
+Dec-08 15:43:55.737 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+Dec-08 15:43:56.969 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declararion
+Dec-08 15:43:56.988 [main] INFO  nextflow.cli.CmdRun - Launching `/cluster/work/nme/software/apps/nextflow/nf_pipelines/nf_bisulfite_WGBS_dev2` [distracted_meucci] DSL2 - revision: c4216843f9
+Dec-08 15:43:56.988 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Dec-08 15:43:56.991 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[nf-tower@1.6.3]
+Dec-08 15:43:56.991 [main] DEBUG nextflow.plugin.PluginsFacade - Plugin 'start' is not required in self-contained mode -- ignoring for plugin: nf-tower
+Dec-08 15:43:57.014 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /cluster/home/khiltunen/.nextflow/secrets/store.json
+Dec-08 15:43:57.019 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@2a47597] - activable => nextflow.secret.LocalSecretsProvider@2a47597
+Dec-08 15:43:57.085 [main] DEBUG nextflow.Session - Session UUID: 539827a4-6ace-41df-b6d0-2f97dfefee27
+Dec-08 15:43:57.086 [main] DEBUG nextflow.Session - Run name: distracted_meucci
+Dec-08 15:43:57.086 [main] DEBUG nextflow.Session - Executor pool size: 2
+Dec-08 15:43:57.094 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Dec-08 15:43:57.097 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=10; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Dec-08 15:43:57.126 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 23.10.0 build 5891
+  Created: 15-10-2023 15:14 UTC (17:14 CEST)
+  System: Linux 3.10.0-1160.95.1.el7.x86_64
+  Runtime: Groovy 3.0.19 on OpenJDK 64-Bit Server VM 14.0.2+12-46
+  Encoding: UTF-8 (UTF-8)
+  Process: 90321@eu-g5-011-3 [10.205.105.42]
+  CPUs: 1 - Mem: 4 GB (3.4 GB) - Swap: 0 (0)
+Dec-08 15:43:57.202 [main] DEBUG nextflow.Session - Work-dir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen [lustre]
+Dec-08 15:43:57.203 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /cluster/work/nme/software/apps/nextflow/nf_pipelines/bin
+Dec-08 15:43:57.235 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[GoogleLifeSciencesExecutor, AwsBatchExecutor, GoogleBatchExecutor]
+Dec-08 15:43:57.249 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Dec-08 15:43:57.281 [main] DEBUG nextflow.Session - Observer factory: WaveFactory
+Dec-08 15:43:57.302 [main] DEBUG i.s.wave.plugin.config.WaveConfig - Wave strategy not specified - using default: [container, dockerfile, conda, spack]
+Dec-08 15:43:57.312 [main] DEBUG io.seqera.wave.plugin.WaveClient - Wave config: WaveConfig(enabled:null, endpoint:https://wave.seqera.io, containerConfigUrl:[], tokensCacheMaxDuration:30m, condaOpts:CondaOpts(mambaImage=mambaorg/micromamba:1.5.1; basePackages=conda-forge::procps-ng, commands=null), spackOpts:SpackOpts(basePackages=null, commands=null), strategy:[container, dockerfile, conda, spack], bundleProjectResources:null, buildRepository:null, cacheRepository:null, retryOpts:RetryOpts(delay:450ms, maxDelay:1m 30s, maxAttempts:10, jitter:0.25), httpClientOpts:HttpOpts(), freezeMode:null, dryRunMode:false)
+Dec-08 15:43:57.462 [main] DEBUG nextflow.Session - Observer factory: TowerFactory
+Dec-08 15:43:57.516 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Dec-08 15:43:57.541 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 2; maxThreads: 1000
+Dec-08 15:43:59.005 [main] DEBUG nextflow.Session - Session start
+Dec-08 15:43:59.011 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /cluster/work/nme/data/khiltunen/demuxed_thesis_samples/S183/sample_qc/pipeline_info/execution_trace.txt
+Dec-08 15:43:59.452 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Dec-08 15:44:02.767 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:02.767 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:02.777 [main] DEBUG nextflow.executor.Executor - [warm up] executor > slurm
+Dec-08 15:44:02.783 [main] DEBUG n.processor.TaskPollingMonitor - Creating task monitor for executor 'slurm' > capacity: 100; pollInterval: 5s; dumpInterval: 5m 
+Dec-08 15:44:02.785 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: slurm)
+Dec-08 15:44:02.787 [main] DEBUG n.executor.AbstractGridExecutor - Creating executor 'slurm' > queue-stat-interval: 1m
+Dec-08 15:44:02.890 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:trimGalore` matches labels `trimGalore` for process with name TRIM_GALORE
+Dec-08 15:44:02.891 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:02.891 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:02.896 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:fastqScreen` matches labels `fastqScreen` for process with name FASTQ_SCREEN
+Dec-08 15:44:02.897 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:02.897 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:02.931 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:02.931 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:02.953 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:bismark` matches labels `bismark` for process with name BISMARK
+Dec-08 15:44:02.955 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:02.955 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:02.974 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:bismarkFilterNonConversion` matches labels `bismarkFilterNonConversion` for process with name BISMARK_FILTER_NON_CONVERSION
+Dec-08 15:44:02.975 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:02.975 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:02.991 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:bismarkDeduplication` matches labels `bismarkDeduplication` for process with name BISMARK_DEDUPLICATION
+Dec-08 15:44:02.992 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:02.992 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:03.009 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:BismarkMethylationExtractor` matches labels `BismarkMethylationExtractor` for process with name BISMARK_METHYLATION_EXTRACTOR
+Dec-08 15:44:03.009 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:03.010 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:03.049 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:03.061 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:03.064 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:03.064 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:03.067 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:multiQC` matches labels `multiQC` for process with name MULTIQC
+Dec-08 15:44:03.068 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Dec-08 15:44:03.068 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Dec-08 15:44:03.080 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: FASTQC, BISMARK2REPORT, TRIM_GALORE, FASTQ_SCREEN, BISMARK2SUMMARY, BISMARK_METHYLATION_EXTRACTOR, MULTIQC, BISMARK, BISMARK_FILTER_NON_CONVERSION, FASTQC2, BISMARK_DEDUPLICATION
+Dec-08 15:44:03.080 [main] DEBUG nextflow.Session - Igniting dataflow network (12)
+Dec-08 15:44:03.087 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > FASTQC
+Dec-08 15:44:03.088 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > TRIM_GALORE
+Dec-08 15:44:03.089 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > FASTQ_SCREEN
+Dec-08 15:44:03.089 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > FASTQC2
+Dec-08 15:44:03.089 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > BISMARK
+Dec-08 15:44:03.089 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > BISMARK_FILTER_NON_CONVERSION
+Dec-08 15:44:03.090 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > BISMARK_DEDUPLICATION
+Dec-08 15:44:03.091 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > BISMARK_METHYLATION_EXTRACTOR
+Dec-08 15:44:03.092 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > BISMARK2REPORT
+Dec-08 15:44:03.093 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > BISMARK2SUMMARY
+Dec-08 15:44:03.094 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > MULTIQC
+Dec-08 15:44:03.094 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_550761db0cbfda3b: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/bismark2summary.mod.nf
+  Script_107a66d93a0e2e6c: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/multiqc.mod.nf
+  Script_37cf6ff41f39c273: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/files.mod.nf
+  Script_1e5e2b58dfc1910c: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/bismark_deduplication.mod.nf
+  Script_b93cb7b548d9ab2b: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/genomes.mod.nf
+  Script_fa3da265900ed6f8: /cluster/work/nme/software/apps/nextflow/nf_pipelines/nf_bisulfite_WGBS_dev2
+  Script_9ce5d3a12dd36e9e: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/bismark2report.mod.nf
+  Script_021e16eb1091e7ba: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/fastqc.mod.nf
+  Script_ea3a18fe88302691: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/bismark.mod.nf
+  Script_4562746229165328: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/bismark_methylation_extractor.mod.nf
+  Script_fef66589547ea1c7: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/fastq_screen.mod.nf
+  Script_81e7878e60255842: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/bismark_filter_non_conversion.mod.nf
+  Script_a7f7cb88e0dde528: /cluster/work/nme/software/apps/nextflow/nf_pipelines/./nf_modules/trim_galore.mod.nf
+Dec-08 15:44:03.094 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Dec-08 15:44:03.094 [main] DEBUG nextflow.Session - Session await
+Dec-08 15:44:03.088 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 01_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [:]
+Dec-08 15:44:06.736 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 01_Blood_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.751 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 01_Liver_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.758 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 01_scAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.774 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 02_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.782 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 02_Blood_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.789 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 02_Liver_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.795 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 02_scAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.809 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 03_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.814 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 03_Liver_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.826 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 04_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.835 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 04_Liver_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.842 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 05_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.850 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 05_Blood_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.856 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 05_Liver_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.862 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 05_scAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.869 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 06_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.874 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 06_Blood_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.880 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 06_Liver_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.887 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 06_scAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.894 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 07_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.901 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 07_Blood_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.907 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 07_Liver_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.919 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 07_scAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.925 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 08_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.933 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 08_Blood_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.940 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 08_Liver_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.947 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 08_scAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.954 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 09_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.961 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 10_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.968 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 11_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.977 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 11_BAT_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.985 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 12_BAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:06.992 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 12_BAT_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.000 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 13_BAT_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.008 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 13_Blood_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.015 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 13_scAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.022 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 14_BAT_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.031 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 14_Blood_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.036 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 14_scAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.042 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 15_BAT_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.050 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 15_Blood_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.056 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 15_Liver_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.063 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 15_scAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.070 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 16_BAT_3_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.078 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 16_Blood_2_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.084 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 16_Liver_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.088 [PathVisitor-2] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: ../subfolder_1/; pattern: 16_scAT_1_C_{1,2}.{fastq,fq}.gz; options: [syntax:glob, type:file]
+Dec-08 15:44:07.298 [Actor Thread 36] DEBUG i.s.wave.plugin.config.WaveConfig - Wave strategy not specified - using default: [container, dockerfile, conda, spack]
+Dec-08 15:44:07.300 [Actor Thread 36] DEBUG io.seqera.wave.plugin.WaveClient - Wave config: WaveConfig(enabled:null, endpoint:https://wave.seqera.io, containerConfigUrl:[], tokensCacheMaxDuration:30m, condaOpts:CondaOpts(mambaImage=mambaorg/micromamba:1.5.1; basePackages=conda-forge::procps-ng, commands=null), spackOpts:SpackOpts(basePackages=null, commands=null), strategy:[container, dockerfile, conda, spack], bundleProjectResources:null, buildRepository:null, cacheRepository:null, retryOpts:RetryOpts(delay:450ms, maxDelay:1m 30s, maxAttempts:10, jitter:0.25), httpClientOpts:HttpOpts(), freezeMode:null, dryRunMode:false)
+Dec-08 15:44:07.784 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (01_BAT_1_C) > jobId: 39343468; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/e6/0334cd95fc764a2ce3fb4bab707487
+Dec-08 15:44:07.784 [Task submitter] INFO  nextflow.Session - [e6/0334cd] Submitted process > FASTQC (01_BAT_1_C)
+Dec-08 15:44:07.897 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (01_Blood_3_C) > jobId: 39343469; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/4a/076df23917a70f8452a239b69c0928
+Dec-08 15:44:07.897 [Task submitter] INFO  nextflow.Session - [4a/076df2] Submitted process > FASTQC (01_Blood_3_C)
+Dec-08 15:44:08.157 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (01_Blood_3_C) > jobId: 39343470; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/0f/ef318db66f46450bbbbdc8dbf1fd8a
+Dec-08 15:44:08.158 [Task submitter] INFO  nextflow.Session - [0f/ef318d] Submitted process > TRIM_GALORE (01_Blood_3_C)
+Dec-08 15:44:08.622 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (01_BAT_1_C) > jobId: 39343471; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/b0/e7c0e63e5bd4195b861098242c15e0
+Dec-08 15:44:08.623 [Task submitter] INFO  nextflow.Session - [b0/e7c0e6] Submitted process > TRIM_GALORE (01_BAT_1_C)
+Dec-08 15:44:08.714 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (01_Liver_2_C) > jobId: 39343472; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/3b/922e6dd930556fa1d0549028ba2a1f
+Dec-08 15:44:08.714 [Task submitter] INFO  nextflow.Session - [3b/922e6d] Submitted process > FASTQC (01_Liver_2_C)
+Dec-08 15:44:08.824 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (01_scAT_1_C) > jobId: 39343473; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/21/86b7b6be75f0db8db8328885fbdff3
+Dec-08 15:44:08.825 [Task submitter] INFO  nextflow.Session - [21/86b7b6] Submitted process > FASTQC (01_scAT_1_C)
+Dec-08 15:44:08.896 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (01_Liver_2_C) > jobId: 39343474; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/17/ab411d654905c052e10efa6f6cee8e
+Dec-08 15:44:08.897 [Task submitter] INFO  nextflow.Session - [17/ab411d] Submitted process > TRIM_GALORE (01_Liver_2_C)
+Dec-08 15:44:09.499 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (01_scAT_1_C) > jobId: 39343475; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/06/3ee662c8faee564b211fe2ef61ac17
+Dec-08 15:44:09.499 [Task submitter] INFO  nextflow.Session - [06/3ee662] Submitted process > TRIM_GALORE (01_scAT_1_C)
+Dec-08 15:44:09.580 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (02_BAT_1_C) > jobId: 39343476; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/25/3e80046e6d49c05568945b38ad6603
+Dec-08 15:44:09.580 [Task submitter] INFO  nextflow.Session - [25/3e8004] Submitted process > FASTQC (02_BAT_1_C)
+Dec-08 15:44:09.785 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (02_Blood_3_C) > jobId: 39343477; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/78/51c7509bc1874fa45f7a7645f29712
+Dec-08 15:44:09.785 [Task submitter] INFO  nextflow.Session - [78/51c750] Submitted process > FASTQC (02_Blood_3_C)
+Dec-08 15:44:09.964 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (02_scAT_1_C) > jobId: 39343479; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/ef/cee467359bb1d9f785bbaafe05856c
+Dec-08 15:44:09.964 [Task submitter] INFO  nextflow.Session - [ef/cee467] Submitted process > FASTQC (02_scAT_1_C)
+Dec-08 15:44:10.058 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (02_BAT_1_C) > jobId: 39343480; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/d4/222e78d7a0c2b4671f5b74654aa890
+Dec-08 15:44:10.058 [Task submitter] INFO  nextflow.Session - [d4/222e78] Submitted process > TRIM_GALORE (02_BAT_1_C)
+Dec-08 15:44:10.198 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (02_Liver_2_C) > jobId: 39343481; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/c8/f5678dc1f94f0ffcf3f4b29351a23f
+Dec-08 15:44:10.198 [Task submitter] INFO  nextflow.Session - [c8/f5678d] Submitted process > FASTQC (02_Liver_2_C)
+Dec-08 15:44:10.288 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (02_Blood_3_C) > jobId: 39343482; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/21/b0413c9787c02b280e36fa8ef65491
+Dec-08 15:44:10.288 [Task submitter] INFO  nextflow.Session - [21/b0413c] Submitted process > TRIM_GALORE (02_Blood_3_C)
+Dec-08 15:44:10.395 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (02_Liver_2_C) > jobId: 39343483; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/95/825fb71a9a6c435d5ee4d22435ae51
+Dec-08 15:44:10.395 [Task submitter] INFO  nextflow.Session - [95/825fb7] Submitted process > TRIM_GALORE (02_Liver_2_C)
+Dec-08 15:44:11.216 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (03_BAT_1_C) > jobId: 39343484; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/0e/b6a921a4bfdb221653964b7c0a995a
+Dec-08 15:44:11.216 [Task submitter] INFO  nextflow.Session - [0e/b6a921] Submitted process > FASTQC (03_BAT_1_C)
+Dec-08 15:44:13.164 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (03_Liver_2_C) > jobId: 39343489; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/f3/f3e0e4f56dd634c1b2e4c35472499f
+Dec-08 15:44:13.164 [Task submitter] INFO  nextflow.Session - [f3/f3e0e4] Submitted process > FASTQC (03_Liver_2_C)
+Dec-08 15:44:13.350 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (02_scAT_1_C) > jobId: 39343490; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/04/c1cfee1f690d5ee77a2b326715b55c
+Dec-08 15:44:13.350 [Task submitter] INFO  nextflow.Session - [04/c1cfee] Submitted process > TRIM_GALORE (02_scAT_1_C)
+Dec-08 15:44:13.568 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (03_BAT_1_C) > jobId: 39343491; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/25/d552367b09efaae408b09f70e90b4f
+Dec-08 15:44:13.568 [Task submitter] INFO  nextflow.Session - [25/d55236] Submitted process > TRIM_GALORE (03_BAT_1_C)
+Dec-08 15:44:13.732 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (04_Liver_2_C) > jobId: 39343492; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/1f/2c4be7c705aaed3115d98aa5d73065
+Dec-08 15:44:13.733 [Task submitter] INFO  nextflow.Session - [1f/2c4be7] Submitted process > FASTQC (04_Liver_2_C)
+Dec-08 15:44:13.868 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (05_BAT_1_C) > jobId: 39343493; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/f1/4d37ea596789697d7002530c8f1645
+Dec-08 15:44:13.868 [Task submitter] INFO  nextflow.Session - [f1/4d37ea] Submitted process > FASTQC (05_BAT_1_C)
+Dec-08 15:44:13.957 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (04_BAT_1_C) > jobId: 39343494; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/e4/bf4aa85466236a74ec0d02da790d28
+Dec-08 15:44:13.957 [Task submitter] INFO  nextflow.Session - [e4/bf4aa8] Submitted process > FASTQC (04_BAT_1_C)
+Dec-08 15:44:14.103 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (04_BAT_1_C) > jobId: 39343495; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/e6/a34487f88e8a5bd030a29a0f549ebb
+Dec-08 15:44:14.103 [Task submitter] INFO  nextflow.Session - [e6/a34487] Submitted process > TRIM_GALORE (04_BAT_1_C)
+Dec-08 15:44:14.274 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (03_Liver_2_C) > jobId: 39343496; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/5a/41ad2d54259eb7705667fce764babd
+Dec-08 15:44:14.274 [Task submitter] INFO  nextflow.Session - [5a/41ad2d] Submitted process > TRIM_GALORE (03_Liver_2_C)
+Dec-08 15:44:14.378 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (05_Blood_3_C) > jobId: 39343497; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/1c/1ec7d514b9b39c4957568185f4fdb2
+Dec-08 15:44:14.378 [Task submitter] INFO  nextflow.Session - [1c/1ec7d5] Submitted process > FASTQC (05_Blood_3_C)
+Dec-08 15:44:14.475 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (04_Liver_2_C) > jobId: 39343498; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/77/46dc8bc5d1970368b506d08dbd19e9
+Dec-08 15:44:14.475 [Task submitter] INFO  nextflow.Session - [77/46dc8b] Submitted process > TRIM_GALORE (04_Liver_2_C)
+Dec-08 15:44:14.585 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (05_BAT_1_C) > jobId: 39343499; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/17/39c6ca5468d7aff3fa0f6a200689fa
+Dec-08 15:44:14.585 [Task submitter] INFO  nextflow.Session - [17/39c6ca] Submitted process > TRIM_GALORE (05_BAT_1_C)
+Dec-08 15:44:14.742 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (05_Liver_2_C) > jobId: 39343500; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/51/697fab2f9396c0e217f2f9ffd0f798
+Dec-08 15:44:14.743 [Task submitter] INFO  nextflow.Session - [51/697fab] Submitted process > TRIM_GALORE (05_Liver_2_C)
+Dec-08 15:44:14.854 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (05_Blood_3_C) > jobId: 39343501; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/d8/4573e7ec8b8aab8852b20fd60761ca
+Dec-08 15:44:14.854 [Task submitter] INFO  nextflow.Session - [d8/4573e7] Submitted process > TRIM_GALORE (05_Blood_3_C)
+Dec-08 15:44:14.960 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (05_scAT_1_C) > jobId: 39343502; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/1d/b5a1a00feb513a2c9fd639489f3fc2
+Dec-08 15:44:14.960 [Task submitter] INFO  nextflow.Session - [1d/b5a1a0] Submitted process > FASTQC (05_scAT_1_C)
+Dec-08 15:44:15.049 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (05_Liver_2_C) > jobId: 39343503; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/38/ad857df76c32fefb921d3817f34415
+Dec-08 15:44:15.049 [Task submitter] INFO  nextflow.Session - [38/ad857d] Submitted process > FASTQC (05_Liver_2_C)
+Dec-08 15:44:15.219 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (05_scAT_1_C) > jobId: 39343504; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/97/12d7cf36202a2c004edc7beeb2c41a
+Dec-08 15:44:15.219 [Task submitter] INFO  nextflow.Session - [97/12d7cf] Submitted process > TRIM_GALORE (05_scAT_1_C)
+Dec-08 15:44:15.364 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (06_Blood_3_C) > jobId: 39343505; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/b1/9b566787ae6f5b4339b4df4ce18689
+Dec-08 15:44:15.365 [Task submitter] INFO  nextflow.Session - [b1/9b5667] Submitted process > FASTQC (06_Blood_3_C)
+Dec-08 15:44:15.496 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (06_BAT_1_C) > jobId: 39343506; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/02/ef5feb14e20d21d9742cb193ecd813
+Dec-08 15:44:15.496 [Task submitter] INFO  nextflow.Session - [02/ef5feb] Submitted process > TRIM_GALORE (06_BAT_1_C)
+Dec-08 15:44:15.590 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (06_BAT_1_C) > jobId: 39343507; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/e9/a8ff6db094b75b94f5e4e45adb64aa
+Dec-08 15:44:15.590 [Task submitter] INFO  nextflow.Session - [e9/a8ff6d] Submitted process > FASTQC (06_BAT_1_C)
+Dec-08 15:44:15.755 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (06_Liver_2_C) > jobId: 39343508; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/8c/e5cda1f5808bb8f5c3738d9a34e372
+Dec-08 15:44:15.755 [Task submitter] INFO  nextflow.Session - [8c/e5cda1] Submitted process > TRIM_GALORE (06_Liver_2_C)
+Dec-08 15:44:15.850 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (06_Blood_3_C) > jobId: 39343509; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/e8/2f17505023f9d71a85e2c2f93bcdd1
+Dec-08 15:44:15.851 [Task submitter] INFO  nextflow.Session - [e8/2f1750] Submitted process > TRIM_GALORE (06_Blood_3_C)
+Dec-08 15:44:15.954 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (06_Liver_2_C) > jobId: 39343510; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/fd/c4817cf85eb0b8ae20e96e53a65f5c
+Dec-08 15:44:15.954 [Task submitter] INFO  nextflow.Session - [fd/c4817c] Submitted process > FASTQC (06_Liver_2_C)
+Dec-08 15:44:16.347 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (06_scAT_1_C) > jobId: 39343511; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/40/baac480227a08c1f0724af639ce245
+Dec-08 15:44:16.347 [Task submitter] INFO  nextflow.Session - [40/baac48] Submitted process > FASTQC (06_scAT_1_C)
+Dec-08 15:44:16.523 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (07_BAT_1_C) > jobId: 39343512; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/fb/0316bad02119cbdb8ccfc8db78655a
+Dec-08 15:44:16.523 [Task submitter] INFO  nextflow.Session - [fb/0316ba] Submitted process > TRIM_GALORE (07_BAT_1_C)
+Dec-08 15:44:16.636 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (07_BAT_1_C) > jobId: 39343514; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/1f/8ce9deb34217c3e77f64cc72f1b536
+Dec-08 15:44:16.636 [Task submitter] INFO  nextflow.Session - [1f/8ce9de] Submitted process > FASTQC (07_BAT_1_C)
+Dec-08 15:44:16.725 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (07_Blood_3_C) > jobId: 39343515; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/af/5fb5feddb3f3afbaa6793d9f90c519
+Dec-08 15:44:16.725 [Task submitter] INFO  nextflow.Session - [af/5fb5fe] Submitted process > FASTQC (07_Blood_3_C)
+Dec-08 15:44:16.823 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (06_scAT_1_C) > jobId: 39343516; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/1b/bcba46ddcee61acc39986bdae49d26
+Dec-08 15:44:16.823 [Task submitter] INFO  nextflow.Session - [1b/bcba46] Submitted process > TRIM_GALORE (06_scAT_1_C)
+Dec-08 15:44:16.925 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (07_scAT_1_C) > jobId: 39343517; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/8d/a3abefdbae6962decce0c68101f333
+Dec-08 15:44:16.925 [Task submitter] INFO  nextflow.Session - [8d/a3abef] Submitted process > FASTQC (07_scAT_1_C)
+Dec-08 15:44:17.006 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (07_Liver_2_C) > jobId: 39343518; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/bf/e70beab37f4492e37b8bd7a92ccdb9
+Dec-08 15:44:17.007 [Task submitter] INFO  nextflow.Session - [bf/e70bea] Submitted process > FASTQC (07_Liver_2_C)
+Dec-08 15:44:17.088 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (07_Blood_3_C) > jobId: 39343519; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/e5/391efff11fc374e54fa0960e5f6f9b
+Dec-08 15:44:17.088 [Task submitter] INFO  nextflow.Session - [e5/391eff] Submitted process > TRIM_GALORE (07_Blood_3_C)
+Dec-08 15:44:17.288 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (08_BAT_1_C) > jobId: 39343520; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/95/4981341f9bab1587023f4bb679ad5d
+Dec-08 15:44:17.288 [Task submitter] INFO  nextflow.Session - [95/498134] Submitted process > FASTQC (08_BAT_1_C)
+Dec-08 15:44:17.388 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (07_Liver_2_C) > jobId: 39343521; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/ca/705f08f14f4fdfb51d75b76644a5f7
+Dec-08 15:44:17.388 [Task submitter] INFO  nextflow.Session - [ca/705f08] Submitted process > TRIM_GALORE (07_Liver_2_C)
+Dec-08 15:44:17.501 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (08_Blood_3_C) > jobId: 39343522; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/c8/031a4ab2457302ed258764f99a6d4c
+Dec-08 15:44:17.501 [Task submitter] INFO  nextflow.Session - [c8/031a4a] Submitted process > FASTQC (08_Blood_3_C)
+Dec-08 15:44:17.644 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (07_scAT_1_C) > jobId: 39343523; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/96/1f7236f17db6465a01979793e53da1
+Dec-08 15:44:17.644 [Task submitter] INFO  nextflow.Session - [96/1f7236] Submitted process > TRIM_GALORE (07_scAT_1_C)
+Dec-08 15:44:17.735 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (08_BAT_1_C) > jobId: 39343524; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/f0/01b3816b7ed863950293066013da37
+Dec-08 15:44:17.735 [Task submitter] INFO  nextflow.Session - [f0/01b381] Submitted process > TRIM_GALORE (08_BAT_1_C)
+Dec-08 15:44:17.829 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (08_scAT_1_C) > jobId: 39343525; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/4c/19b70944627491f584c9415f01a216
+Dec-08 15:44:17.829 [Task submitter] INFO  nextflow.Session - [4c/19b709] Submitted process > FASTQC (08_scAT_1_C)
+Dec-08 15:44:17.936 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (08_Liver_2_C) > jobId: 39343526; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/cf/1d0df901c93a0bdf5dab8dd909fa8e
+Dec-08 15:44:17.937 [Task submitter] INFO  nextflow.Session - [cf/1d0df9] Submitted process > FASTQC (08_Liver_2_C)
+Dec-08 15:44:18.022 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (08_Blood_3_C) > jobId: 39343527; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/2f/bf6597e00c1395aa8428e269943af3
+Dec-08 15:44:18.022 [Task submitter] INFO  nextflow.Session - [2f/bf6597] Submitted process > TRIM_GALORE (08_Blood_3_C)
+Dec-08 15:44:18.156 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (09_BAT_1_C) > jobId: 39343528; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/bb/b7a1fc77acdc7b4b5141d47681e584
+Dec-08 15:44:18.156 [Task submitter] INFO  nextflow.Session - [bb/b7a1fc] Submitted process > FASTQC (09_BAT_1_C)
+Dec-08 15:44:19.600 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (08_Liver_2_C) > jobId: 39343534; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/12/02ef26aab5a1e5df8e373961f5ffb6
+Dec-08 15:44:19.600 [Task submitter] INFO  nextflow.Session - [12/02ef26] Submitted process > TRIM_GALORE (08_Liver_2_C)
+Dec-08 15:44:20.063 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (10_BAT_1_C) > jobId: 39343535; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/d9/4325cd576e6f8ec27446e3ca9d5826
+Dec-08 15:44:20.065 [Task submitter] INFO  nextflow.Session - [d9/4325cd] Submitted process > FASTQC (10_BAT_1_C)
+Dec-08 15:44:20.233 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (11_BAT_1_C) > jobId: 39343536; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/43/b9ed680dfed46bb757182c95770348
+Dec-08 15:44:20.233 [Task submitter] INFO  nextflow.Session - [43/b9ed68] Submitted process > FASTQC (11_BAT_1_C)
+Dec-08 15:44:20.549 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (08_scAT_1_C) > jobId: 39343537; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/a5/63d5152070a26c595e8320e035a39a
+Dec-08 15:44:20.549 [Task submitter] INFO  nextflow.Session - [a5/63d515] Submitted process > TRIM_GALORE (08_scAT_1_C)
+Dec-08 15:44:20.821 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (09_BAT_1_C) > jobId: 39343538; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/05/7ffed94a8931945a2f93dfb4a88d8b
+Dec-08 15:44:20.822 [Task submitter] INFO  nextflow.Session - [05/7ffed9] Submitted process > TRIM_GALORE (09_BAT_1_C)
+Dec-08 15:44:20.908 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (11_BAT_3_C) > jobId: 39343539; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/a7/c0dd2cfee0ce9234c1b5a25b4b1591
+Dec-08 15:44:20.908 [Task submitter] INFO  nextflow.Session - [a7/c0dd2c] Submitted process > FASTQC (11_BAT_3_C)
+Dec-08 15:44:21.023 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (12_BAT_1_C) > jobId: 39343540; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/4f/71fa662ae3c5bfe2d198e67643dd2d
+Dec-08 15:44:21.023 [Task submitter] INFO  nextflow.Session - [4f/71fa66] Submitted process > FASTQC (12_BAT_1_C)
+Dec-08 15:44:21.349 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (10_BAT_1_C) > jobId: 39343541; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/84/9d4a7807b737a8f5f0d79d126717eb
+Dec-08 15:44:21.350 [Task submitter] INFO  nextflow.Session - [84/9d4a78] Submitted process > TRIM_GALORE (10_BAT_1_C)
+Dec-08 15:44:21.533 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (12_BAT_3_C) > jobId: 39343542; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/f1/631dfbf1636a2ce676051b0bef5951
+Dec-08 15:44:21.533 [Task submitter] INFO  nextflow.Session - [f1/631dfb] Submitted process > FASTQC (12_BAT_3_C)
+Dec-08 15:44:21.709 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (11_BAT_1_C) > jobId: 39343543; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/db/9251c453fd83d09becabf377142c73
+Dec-08 15:44:21.710 [Task submitter] INFO  nextflow.Session - [db/9251c4] Submitted process > TRIM_GALORE (11_BAT_1_C)
+Dec-08 15:44:21.909 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (12_BAT_1_C) > jobId: 39343544; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/17/6a2c2c80fd20192ca345706174e39c
+Dec-08 15:44:21.909 [Task submitter] INFO  nextflow.Session - [17/6a2c2c] Submitted process > TRIM_GALORE (12_BAT_1_C)
+Dec-08 15:44:22.701 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (11_BAT_3_C) > jobId: 39343546; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/63/023ab6a1994c127fcdfa21128af0bc
+Dec-08 15:44:22.701 [Task submitter] INFO  nextflow.Session - [63/023ab6] Submitted process > TRIM_GALORE (11_BAT_3_C)
+Dec-08 15:44:22.880 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (13_BAT_3_C) > jobId: 39343547; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/bc/0de6e97eda4a80c7eddf0c793a2ba2
+Dec-08 15:44:22.880 [Task submitter] INFO  nextflow.Session - [bc/0de6e9] Submitted process > FASTQC (13_BAT_3_C)
+Dec-08 15:44:22.990 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (13_Blood_2_C) > jobId: 39343548; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/29/0b22ddfb1bccac7ec9a3a08e72374d
+Dec-08 15:44:22.990 [Task submitter] INFO  nextflow.Session - [29/0b22dd] Submitted process > FASTQC (13_Blood_2_C)
+Dec-08 15:44:23.070 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (13_scAT_1_C) > jobId: 39343549; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/6e/af4b36c619d84e3387b5a71c18adfc
+Dec-08 15:44:23.070 [Task submitter] INFO  nextflow.Session - [6e/af4b36] Submitted process > FASTQC (13_scAT_1_C)
+Dec-08 15:44:23.166 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (13_BAT_3_C) > jobId: 39343550; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/67/4ad2c6212d14d6e1ab68e4fd0bdd98
+Dec-08 15:44:23.167 [Task submitter] INFO  nextflow.Session - [67/4ad2c6] Submitted process > TRIM_GALORE (13_BAT_3_C)
+Dec-08 15:44:23.225 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (14_BAT_3_C) > jobId: 39343551; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/a1/0c7b303cc8f14ca74e995ad7420814
+Dec-08 15:44:23.225 [Task submitter] INFO  nextflow.Session - [a1/0c7b30] Submitted process > FASTQC (14_BAT_3_C)
+Dec-08 15:44:23.314 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (12_BAT_3_C) > jobId: 39343552; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/74/cd80677733b081b8069c550a036543
+Dec-08 15:44:23.314 [Task submitter] INFO  nextflow.Session - [74/cd8067] Submitted process > TRIM_GALORE (12_BAT_3_C)
+Dec-08 15:44:23.400 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (14_Blood_2_C) > jobId: 39343553; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/7f/99bf8f98ab4bb9883ecb24d4a5788d
+Dec-08 15:44:23.400 [Task submitter] INFO  nextflow.Session - [7f/99bf8f] Submitted process > FASTQC (14_Blood_2_C)
+Dec-08 15:44:23.482 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (14_scAT_1_C) > jobId: 39343554; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/75/4e07993d4721592a0b2ce36eaa73d2
+Dec-08 15:44:23.482 [Task submitter] INFO  nextflow.Session - [75/4e0799] Submitted process > FASTQC (14_scAT_1_C)
+Dec-08 15:44:23.558 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (13_scAT_1_C) > jobId: 39343555; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/bf/fdd5dc8b4ee0520bb94410dd908895
+Dec-08 15:44:23.558 [Task submitter] INFO  nextflow.Session - [bf/fdd5dc] Submitted process > TRIM_GALORE (13_scAT_1_C)
+Dec-08 15:44:23.758 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (13_Blood_2_C) > jobId: 39343556; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/1c/a834dc64da28dc472e16699cffe667
+Dec-08 15:44:23.758 [Task submitter] INFO  nextflow.Session - [1c/a834dc] Submitted process > TRIM_GALORE (13_Blood_2_C)
+Dec-08 15:44:23.826 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (15_BAT_3_C) > jobId: 39343557; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/4e/e6eef12cbdcf6343f3feafe6998c79
+Dec-08 15:44:23.826 [Task submitter] INFO  nextflow.Session - [4e/e6eef1] Submitted process > FASTQC (15_BAT_3_C)
+Dec-08 15:44:24.097 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (15_Blood_2_C) > jobId: 39343559; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/d3/63c478fbefe38ed7ab030e8bc90362
+Dec-08 15:44:24.097 [Task submitter] INFO  nextflow.Session - [d3/63c478] Submitted process > FASTQC (15_Blood_2_C)
+Dec-08 15:44:24.211 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (14_BAT_3_C) > jobId: 39343560; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/96/07379ac7176d7371a26804dfcb2ca1
+Dec-08 15:44:24.211 [Task submitter] INFO  nextflow.Session - [96/07379a] Submitted process > TRIM_GALORE (14_BAT_3_C)
+Dec-08 15:44:24.419 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (15_Liver_1_C) > jobId: 39343561; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/ea/45238d6d9a8bdf095638e385185606
+Dec-08 15:44:24.419 [Task submitter] INFO  nextflow.Session - [ea/45238d] Submitted process > FASTQC (15_Liver_1_C)
+Dec-08 15:44:26.477 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (14_Blood_2_C) > jobId: 39343572; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/13/f1526349096b064d1edac7d5d62381
+Dec-08 15:44:26.478 [Task submitter] INFO  nextflow.Session - [13/f15263] Submitted process > TRIM_GALORE (14_Blood_2_C)
+Dec-08 15:44:26.747 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (15_scAT_1_C) > jobId: 39343575; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/a5/62d58dd69be973daa787d06c236ddb
+Dec-08 15:44:26.748 [Task submitter] INFO  nextflow.Session - [a5/62d58d] Submitted process > FASTQC (15_scAT_1_C)
+Dec-08 15:44:26.837 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (16_BAT_3_C) > jobId: 39343576; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/0e/dda8e02cf0fac80b743b55fd870a9f
+Dec-08 15:44:26.837 [Task submitter] INFO  nextflow.Session - [0e/dda8e0] Submitted process > FASTQC (16_BAT_3_C)
+Dec-08 15:44:26.938 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (15_BAT_3_C) > jobId: 39343577; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/18/a65c7eb8f2838f27d1bf9cf39c1978
+Dec-08 15:44:26.938 [Task submitter] INFO  nextflow.Session - [18/a65c7e] Submitted process > TRIM_GALORE (15_BAT_3_C)
+Dec-08 15:44:27.027 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (14_scAT_1_C) > jobId: 39343579; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/93/805041a6508c847017ad07a72f631c
+Dec-08 15:44:27.027 [Task submitter] INFO  nextflow.Session - [93/805041] Submitted process > TRIM_GALORE (14_scAT_1_C)
+Dec-08 15:44:27.126 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (16_Blood_2_C) > jobId: 39343580; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/ea/48e4253bd7d2eaaf4d5052b2c7d973
+Dec-08 15:44:27.127 [Task submitter] INFO  nextflow.Session - [ea/48e425] Submitted process > FASTQC (16_Blood_2_C)
+Dec-08 15:44:27.253 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (16_Liver_1_C) > jobId: 39343581; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/ed/4d9bde3b8905575152d9aa71518098
+Dec-08 15:44:27.253 [Task submitter] INFO  nextflow.Session - [ed/4d9bde] Submitted process > FASTQC (16_Liver_1_C)
+Dec-08 15:44:27.338 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (15_Blood_2_C) > jobId: 39343582; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/25/04529c613e5a76166a2fa605f500bc
+Dec-08 15:44:27.338 [Task submitter] INFO  nextflow.Session - [25/04529c] Submitted process > TRIM_GALORE (15_Blood_2_C)
+Dec-08 15:44:27.433 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC (16_scAT_1_C) > jobId: 39343583; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/b7/3d1e2c163ba15b624820925d6d1ff2
+Dec-08 15:44:27.433 [Task submitter] INFO  nextflow.Session - [b7/3d1e2c] Submitted process > FASTQC (16_scAT_1_C)
+Dec-08 15:44:27.615 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (15_Liver_1_C) > jobId: 39343584; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/ed/07aa813056df166c83bf36abf99e78
+Dec-08 15:44:27.615 [Task submitter] INFO  nextflow.Session - [ed/07aa81] Submitted process > TRIM_GALORE (15_Liver_1_C)
+Dec-08 15:44:27.740 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (16_BAT_3_C) > jobId: 39343585; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/7b/389856dbfa23bdbd20e9c247d0058c
+Dec-08 15:44:27.740 [Task submitter] INFO  nextflow.Session - [7b/389856] Submitted process > TRIM_GALORE (16_BAT_3_C)
+Dec-08 15:44:27.817 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (15_scAT_1_C) > jobId: 39343586; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/9b/d91e3522dd86df522f760ebfa2a7ef
+Dec-08 15:44:27.817 [Task submitter] INFO  nextflow.Session - [9b/d91e35] Submitted process > TRIM_GALORE (15_scAT_1_C)
+Dec-08 15:44:27.900 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (16_Liver_1_C) > jobId: 39343587; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/77/b3439005c6f76aacd822e9d0247d53
+Dec-08 15:44:27.901 [Task submitter] INFO  nextflow.Session - [77/b34390] Submitted process > TRIM_GALORE (16_Liver_1_C)
+Dec-08 15:44:27.965 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (16_Blood_2_C) > jobId: 39343588; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/4d/0359de5d10529ab5ed38a07e6801be
+Dec-08 15:44:27.965 [Task submitter] INFO  nextflow.Session - [4d/0359de] Submitted process > TRIM_GALORE (16_Blood_2_C)
+Dec-08 15:44:28.035 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process TRIM_GALORE (16_scAT_1_C) > jobId: 39343589; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/16/04f07b5a4ee0f58d9d9c3008aa2fc0
+Dec-08 15:44:28.035 [Task submitter] INFO  nextflow.Session - [16/04f07b] Submitted process > TRIM_GALORE (16_scAT_1_C)
+Dec-08 15:44:32.805 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343469; id: 2; name: FASTQC (01_Blood_3_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/4a/076df23917a70f8452a239b69c0928 started: 1702046657797; exited: 2023-12-08T14:44:29Z; ]
+Dec-08 15:44:32.951 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343470; id: 5; name: TRIM_GALORE (01_Blood_3_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/0f/ef318db66f46450bbbbdc8dbf1fd8a started: 1702046657798; exited: 2023-12-08T14:44:31Z; ]
+Dec-08 15:44:33.109 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343472; id: 3; name: FASTQC (01_Liver_2_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/3b/922e6dd930556fa1d0549028ba2a1f started: 1702046657804; exited: 2023-12-08T14:44:29Z; ]
+Dec-08 15:44:33.350 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (01_Blood_3_C) > jobId: 39343602; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/2c/ac3041fd3e256e47743f9c5de3326d
+Dec-08 15:44:33.350 [Task submitter] INFO  nextflow.Session - [2c/ac3041] Submitted process > FASTQC2 (01_Blood_3_C)
+Dec-08 15:44:33.470 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (01_Blood_3_C) > jobId: 39343603; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/12/f4319befe7354507344ec1149568a7
+Dec-08 15:44:33.470 [Task submitter] INFO  nextflow.Session - [12/f4319b] Submitted process > FASTQ_SCREEN (01_Blood_3_C)
+Dec-08 15:44:33.557 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (01_Blood_3_C) > jobId: 39343604; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/f9/aa3b35545b1c82bdce2d0800bedda2
+Dec-08 15:44:33.557 [Task submitter] INFO  nextflow.Session - [f9/aa3b35] Submitted process > BISMARK (01_Blood_3_C)
+Dec-08 15:44:37.804 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343468; id: 1; name: FASTQC (01_BAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/e6/0334cd95fc764a2ce3fb4bab707487 started: 1702046657794; exited: 2023-12-08T14:44:34Z; ]
+Dec-08 15:44:37.859 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343471; id: 4; name: TRIM_GALORE (01_BAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/b0/e7c0e63e5bd4195b861098242c15e0 started: 1702046657802; exited: 2023-12-08T14:44:34Z; ]
+Dec-08 15:44:37.933 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343474; id: 6; name: TRIM_GALORE (01_Liver_2_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/17/ab411d654905c052e10efa6f6cee8e started: 1702046667804; exited: 2023-12-08T14:44:36Z; ]
+Dec-08 15:44:37.990 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343476; id: 8; name: FASTQC (02_BAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/25/3e80046e6d49c05568945b38ad6603 started: 1702046662801; exited: 2023-12-08T14:44:35Z; ]
+Dec-08 15:44:38.027 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343477; id: 11; name: FASTQC (02_Blood_3_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/78/51c7509bc1874fa45f7a7645f29712 started: 1702046662815; exited: 2023-12-08T14:44:35Z; ]
+Dec-08 15:44:38.992 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (01_BAT_1_C) > jobId: 39343609; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/1e/fc2d7f92e4e6d6d7f3c3ff5427c3f8
+Dec-08 15:44:38.992 [Task submitter] INFO  nextflow.Session - [1e/fc2d7f] Submitted process > FASTQC2 (01_BAT_1_C)
+Dec-08 15:44:39.127 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (01_BAT_1_C) > jobId: 39343610; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/5d/b77661e400fa0e638b786f8226a536
+Dec-08 15:44:39.127 [Task submitter] INFO  nextflow.Session - [5d/b77661] Submitted process > BISMARK (01_BAT_1_C)
+Dec-08 15:44:39.284 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (01_BAT_1_C) > jobId: 39343611; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/01/b4cc8bea41ee28bf5ef3fba8fe62d3
+Dec-08 15:44:39.285 [Task submitter] INFO  nextflow.Session - [01/b4cc8b] Submitted process > FASTQ_SCREEN (01_BAT_1_C)
+Dec-08 15:44:39.418 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (01_Liver_2_C) > jobId: 39343613; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/11/85c419b1b9848cf818577d4f9b8d87
+Dec-08 15:44:39.418 [Task submitter] INFO  nextflow.Session - [11/85c419] Submitted process > FASTQC2 (01_Liver_2_C)
+Dec-08 15:44:39.513 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (01_Liver_2_C) > jobId: 39343614; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/47/5422b21c46eb333a3c49bc39d09776
+Dec-08 15:44:39.514 [Task submitter] INFO  nextflow.Session - [47/5422b2] Submitted process > FASTQ_SCREEN (01_Liver_2_C)
+Dec-08 15:44:39.665 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (01_Liver_2_C) > jobId: 39343615; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/64/982e059b74ea0daffa8865db413424
+Dec-08 15:44:39.665 [Task submitter] INFO  nextflow.Session - [64/982e05] Submitted process > BISMARK (01_Liver_2_C)
+Dec-08 15:44:42.802 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343473; id: 7; name: FASTQC (01_scAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/21/86b7b6be75f0db8db8328885fbdff3 started: 1702046667800; exited: 2023-12-08T14:44:39Z; ]
+Dec-08 15:44:42.936 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343475; id: 9; name: TRIM_GALORE (01_scAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/06/3ee662c8faee564b211fe2ef61ac17 started: 1702046662800; exited: 2023-12-08T14:44:40Z; ]
+Dec-08 15:44:43.240 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343479; id: 15; name: FASTQC (02_scAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/ef/cee467359bb1d9f785bbaafe05856c started: 1702046673158; exited: 2023-12-08T14:44:42Z; ]
+Dec-08 15:44:43.446 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343481; id: 12; name: FASTQC (02_Liver_2_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/c8/f5678dc1f94f0ffcf3f4b29351a23f started: 1702046673161; exited: 2023-12-08T14:44:42Z; ]
+Dec-08 15:44:45.372 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (01_scAT_1_C) > jobId: 39343621; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/01/facd295e72492e9d716d7468bb90b3
+Dec-08 15:44:45.372 [Task submitter] INFO  nextflow.Session - [01/facd29] Submitted process > FASTQC2 (01_scAT_1_C)
+Dec-08 15:44:45.433 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343482; id: 13; name: TRIM_GALORE (02_Blood_3_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/21/b0413c9787c02b280e36fa8ef65491 started: 1702046673163; exited: 2023-12-08T14:44:42Z; ]
+Dec-08 15:44:45.488 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343483; id: 14; name: TRIM_GALORE (02_Liver_2_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/95/825fb71a9a6c435d5ee4d22435ae51 started: 1702046673164; exited: 2023-12-08T14:44:39Z; ]
+Dec-08 15:44:45.626 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (01_scAT_1_C) > jobId: 39343622; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/d6/77d62838ea4456950d5fd1475150a3
+Dec-08 15:44:45.627 [Task submitter] INFO  nextflow.Session - [d6/77d628] Submitted process > FASTQ_SCREEN (01_scAT_1_C)
+Dec-08 15:44:45.727 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (01_scAT_1_C) > jobId: 39343623; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/8a/d13eb730e0e57d5e4a770cbc5d5d69
+Dec-08 15:44:45.727 [Task submitter] INFO  nextflow.Session - [8a/d13eb7] Submitted process > BISMARK (01_scAT_1_C)
+Dec-08 15:44:45.861 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (02_Blood_3_C) > jobId: 39343624; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/9b/5ac9790c5c1340a848a37e516bfb13
+Dec-08 15:44:45.861 [Task submitter] INFO  nextflow.Session - [9b/5ac979] Submitted process > BISMARK (02_Blood_3_C)
+Dec-08 15:44:45.987 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (02_Blood_3_C) > jobId: 39343625; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/65/af96fed61eefc34e8c67529a2dcdbc
+Dec-08 15:44:45.988 [Task submitter] INFO  nextflow.Session - [65/af96fe] Submitted process > FASTQC2 (02_Blood_3_C)
+Dec-08 15:44:46.345 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (02_Blood_3_C) > jobId: 39343626; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/2f/ed0a438f96144f51a118a61877b215
+Dec-08 15:44:46.345 [Task submitter] INFO  nextflow.Session - [2f/ed0a43] Submitted process > FASTQ_SCREEN (02_Blood_3_C)
+Dec-08 15:44:46.567 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (02_Liver_2_C) > jobId: 39343627; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/25/a0844eee25b09f22ae3570f071098f
+Dec-08 15:44:46.567 [Task submitter] INFO  nextflow.Session - [25/a0844e] Submitted process > FASTQ_SCREEN (02_Liver_2_C)
+Dec-08 15:44:46.717 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (02_Liver_2_C) > jobId: 39343628; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/95/307ff14c180ed1cd2165e3f6acc6d7
+Dec-08 15:44:46.717 [Task submitter] INFO  nextflow.Session - [95/307ff1] Submitted process > FASTQC2 (02_Liver_2_C)
+Dec-08 15:44:46.861 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (02_Liver_2_C) > jobId: 39343629; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/46/2c713e80c4c4e23a9b4cb54d7cf549
+Dec-08 15:44:46.861 [Task submitter] INFO  nextflow.Session - [46/2c713e] Submitted process > BISMARK (02_Liver_2_C)
+Dec-08 15:44:47.805 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343480; id: 10; name: TRIM_GALORE (02_BAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/d4/222e78d7a0c2b4671f5b74654aa890 started: 1702046673160; exited: 2023-12-08T14:44:45Z; ]
+Dec-08 15:44:47.876 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343491; id: 20; name: TRIM_GALORE (03_BAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/25/d552367b09efaae408b09f70e90b4f started: 1702046678063; exited: 2023-12-08T14:44:47Z; ]
+Dec-08 15:44:48.023 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (02_BAT_1_C) > jobId: 39343630; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/b1/989769821cb36c0b16f794e4b4c63e
+Dec-08 15:44:48.024 [Task submitter] INFO  nextflow.Session - [b1/989769] Submitted process > FASTQC2 (02_BAT_1_C)
+Dec-08 15:44:48.187 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (02_BAT_1_C) > jobId: 39343632; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/9b/2f6a30fc4f4cdaf58bb2bd7028a1cc
+Dec-08 15:44:48.188 [Task submitter] INFO  nextflow.Session - [9b/2f6a30] Submitted process > BISMARK (02_BAT_1_C)
+Dec-08 15:44:52.916 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343484; id: 16; name: FASTQC (03_BAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/0e/b6a921a4bfdb221653964b7c0a995a started: 1702046678059; exited: 2023-12-08T14:44:49Z; ]
+Dec-08 15:44:52.965 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343489; id: 17; name: FASTQC (03_Liver_2_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/f3/f3e0e4f56dd634c1b2e4c35472499f started: 1702046678060; exited: 2023-12-08T14:44:49Z; ]
+Dec-08 15:44:53.079 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (02_BAT_1_C) > jobId: 39343640; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/56/c10b94d5947445cc2c47b8539d1883
+Dec-08 15:44:53.079 [Task submitter] INFO  nextflow.Session - [56/c10b94] Submitted process > FASTQ_SCREEN (02_BAT_1_C)
+Dec-08 15:44:53.223 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343490; id: 18; name: TRIM_GALORE (02_scAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/04/c1cfee1f690d5ee77a2b326715b55c started: 1702046678062; exited: 2023-12-08T14:44:50Z; ]
+Dec-08 15:44:53.281 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343492; id: 22; name: FASTQC (04_Liver_2_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/1f/2c4be7c705aaed3115d98aa5d73065 started: 1702046678064; exited: 2023-12-08T14:44:48Z; ]
+Dec-08 15:44:53.294 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (03_BAT_1_C) > jobId: 39343641; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/02/2bd11b4a583d0167f659be87bcfdef
+Dec-08 15:44:53.294 [Task submitter] INFO  nextflow.Session - [02/2bd11b] Submitted process > FASTQ_SCREEN (03_BAT_1_C)
+Dec-08 15:44:53.350 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343495; id: 24; name: TRIM_GALORE (04_BAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/e6/a34487f88e8a5bd030a29a0f549ebb started: 1702046685546; exited: 2023-12-08T14:44:51Z; ]
+Dec-08 15:44:53.514 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (03_BAT_1_C) > jobId: 39343642; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/46/21f50c200ffb15d08107d18b1d1b1a
+Dec-08 15:44:53.515 [Task submitter] INFO  nextflow.Session - [46/21f50c] Submitted process > BISMARK (03_BAT_1_C)
+Dec-08 15:44:53.658 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (03_BAT_1_C) > jobId: 39343643; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/c5/857915452c60b61de7cefa6a905b4b
+Dec-08 15:44:53.658 [Task submitter] INFO  nextflow.Session - [c5/857915] Submitted process > FASTQC2 (03_BAT_1_C)
+Dec-08 15:44:53.836 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (02_scAT_1_C) > jobId: 39343644; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/8e/d951b6b263db4a0228f5067dbe892e
+Dec-08 15:44:53.836 [Task submitter] INFO  nextflow.Session - [8e/d951b6] Submitted process > FASTQC2 (02_scAT_1_C)
+Dec-08 15:44:57.804 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343493; id: 23; name: FASTQC (05_BAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/f1/4d37ea596789697d7002530c8f1645 started: 1702046685535; exited: 2023-12-08T14:44:54Z; ]
+Dec-08 15:44:57.845 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343494; id: 19; name: FASTQC (04_BAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/e4/bf4aa85466236a74ec0d02da790d28 started: 1702046685536; exited: 2023-12-08T14:44:54Z; ]
+Dec-08 15:44:57.884 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343496; id: 21; name: TRIM_GALORE (03_Liver_2_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/5a/41ad2d54259eb7705667fce764babd started: 1702046685549; exited: 2023-12-08T14:44:55Z; ]
+Dec-08 15:44:57.950 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343497; id: 26; name: FASTQC (05_Blood_3_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/1c/1ec7d514b9b39c4957568185f4fdb2 started: 1702046685550; exited: 2023-12-08T14:44:54Z; ]
+Dec-08 15:44:57.987 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343499; id: 29; name: TRIM_GALORE (05_BAT_1_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/17/39c6ca5468d7aff3fa0f6a200689fa started: 1702046693399; exited: 2023-12-08T14:44:55Z; ]
+Dec-08 15:44:58.424 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (02_scAT_1_C) > jobId: 39343649; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/29/5cba6cac1a842ddf34b9eacbbc23f7
+Dec-08 15:44:58.424 [Task submitter] INFO  nextflow.Session - [29/5cba6c] Submitted process > FASTQ_SCREEN (02_scAT_1_C)
+Dec-08 15:44:58.849 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (02_scAT_1_C) > jobId: 39343651; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/72/36ed3b903d25834b46ce20d5c421f8
+Dec-08 15:44:58.849 [Task submitter] INFO  nextflow.Session - [72/36ed3b] Submitted process > BISMARK (02_scAT_1_C)
+Dec-08 15:44:58.958 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (04_BAT_1_C) > jobId: 39343653; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/b5/7444b24b65cc5419f9c8e4e9a44521
+Dec-08 15:44:58.959 [Task submitter] INFO  nextflow.Session - [b5/7444b2] Submitted process > FASTQC2 (04_BAT_1_C)
+Dec-08 15:44:59.083 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (04_BAT_1_C) > jobId: 39343654; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/10/7632a7ab50ac0d8252a1e6dadbbe10
+Dec-08 15:44:59.083 [Task submitter] INFO  nextflow.Session - [10/7632a7] Submitted process > BISMARK (04_BAT_1_C)
+Dec-08 15:44:59.268 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (04_BAT_1_C) > jobId: 39343655; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/35/dc0306ab312ecec1646f1d437fa630
+Dec-08 15:44:59.268 [Task submitter] INFO  nextflow.Session - [35/dc0306] Submitted process > FASTQ_SCREEN (04_BAT_1_C)
+Dec-08 15:45:02.804 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343498; id: 25; name: TRIM_GALORE (04_Liver_2_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/77/46dc8bc5d1970368b506d08dbd19e9 started: 1702046693398; exited: 2023-12-08T14:45:01Z; ]
+Dec-08 15:45:02.963 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343500; id: 32; name: TRIM_GALORE (05_Liver_2_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/51/697fab2f9396c0e217f2f9ffd0f798 started: 1702046693401; exited: 2023-12-08T14:45:01Z; ]
+Dec-08 15:45:02.991 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQ_SCREEN (03_Liver_2_C) > jobId: 39343657; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/f1/78437cf643ed610aa206294a8a3b2d
+Dec-08 15:45:02.992 [Task submitter] INFO  nextflow.Session - [f1/78437c] Submitted process > FASTQ_SCREEN (03_Liver_2_C)
+Dec-08 15:45:03.118 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 39343501; id: 30; name: TRIM_GALORE (05_Blood_3_C); status: COMPLETED; exit: 0; error: -; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/d8/4573e7ec8b8aab8852b20fd60761ca started: 1702046693403; exited: 2023-12-08T14:44:59Z; ]
+Dec-08 15:45:03.135 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process FASTQC2 (03_Liver_2_C) > jobId: 39343658; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/02/0957198a6b3cad0fd3332e768aa756
+Dec-08 15:45:03.136 [Task submitter] INFO  nextflow.Session - [02/095719] Submitted process > FASTQC2 (03_Liver_2_C)
+Dec-08 15:45:04.910 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process BISMARK (03_Liver_2_C) > jobId: 39343660; workDir: /cluster/work/nme/tmp/.nextflow_cache/khiltunen/0e/af314f0fef4941afc9fc4eab8f0ae8
+Dec-08 15:45:04.910 [Task submitter] INFO  nextflow.Session - [0e/af314f] Submitted process > BISMARK (03_Liver_2_C)

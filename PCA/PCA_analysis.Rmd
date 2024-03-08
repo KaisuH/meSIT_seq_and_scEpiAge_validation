@@ -1,0 +1,284 @@
+---
+title: "PCA analysis"
+author: "Kaisu Hiltunen"
+date: "2024-01-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r libraries, message=FALSE, warning=FALSE}
+setwd("C:/Users/khiltunen/Documents/R/PCA")
+library(tidyverse) #contains ggplot2 dplyr and tidyR for plotting
+library(stats)
+library(impute) #for data imputation
+library(readxl) #for reading excel data
+library(dplyr)
+library(viridis) #for creating colors in the plots (does not work yet)
+library(tools) #for extracting the names
+library(tibble) #for replacing rownames
+library(methylKit) #for analysing coverage
+```
+
+# PCA analysis
+
+## Load data
+```{r load data}
+metaDataFile<-"~/R/PCA/Meta_data_file.xlsx"
+
+#read the mouse clock sites and create a dataframe with the sites
+msClock <- read.table("~/R/PCA/msClockSites_mm10.bed", header = FALSE, 
+                      sep = "\t",stringsAsFactors=FALSE, quote="")
+
+# Replace InputFolder with actual data
+# Using the custom enrichment library
+myInputFolder = "~/R/euler_exports/S183/grcm38"
+```
+
+## Functions for analysis
+```{r data handling functions, warning=FALSE, message=FALSE}
+###################################
+### Read files into data frame ###
+#loop through all the files in the folder and merge the rows with the 
+#matching chromosome location
+create_df <- function(inputFolder, msClock){
+  # Create a data frame with a single column named "chr"
+  # Get a list of file names in the folder
+  sampleFiles = list.files(inputFolder,full.names = T,recursive = T)
+  sampleFiles = sampleFiles[grep(sampleFiles,pattern = ".cov$|.cov.gz$")]
+
+  df_full <- msClock %>%
+    mutate(chr = paste(V1, V2, sep = ":")) %>%
+    dplyr::select(chr) 
+  
+  #Create a vector for the sample file column names
+  colNames<-c("chr", "start_position", "end_position", "percentage_methylation",
+              "methylated_cytosines", "unmethylated_cytosines")
+  pattern <- "^(\\d+_\\w+_\\w+)_GRCm.*"
+  for(f in sampleFiles){
+    #read data from one file
+    sample_data <- read.delim(f,as.is=T,header=F, col.names=colNames,
+                         colClasses = c("character","double","double",
+                                        "double","double","double"))
+    # Modify first column to contain chromosome and start position
+    sample_data <- sample_data %>%
+      mutate(chr = paste(chr, start_position, sep = ":")) %>%
+      dplyr::select(chr, percentage_methylation)
+    # Merge with df_full, keeping only clock sites
+    df_full <- left_join(df_full, sample_data, by = "chr")
+    #remove the file path and the redundant end part in the file name
+    sampleName <- sub(pattern, "\\1", tools::file_path_sans_ext(basename(f)))
+    #substitute the name to look like the rownames in age info
+    df_full <- df_full %>%
+      rename_with(~ sampleName, matches("percentage_methylation"))
+  }
+  # Add the loci as rownames and delete the chr column
+  df_full <- df_full%>%
+    column_to_rownames("chr")
+  return(df_full)
+}
+
+### Function for filtering all rows that contain many NaN values
+# or have low variance
+filter_data<-function(df, min_coverage, n_unique){
+  # Function to retireve site information for sites that have atleast 
+  # minimum coverage (input: min_overage) 
+  # and atleast n unique (input: n_unique) values across all samples.
+  
+  # First step:
+  # Count the number of non-NaN values in each row.
+  # Identify rows with at least min_coverage
+  # & create a new df with only these rows.
+  # Transpose the dataframe to have samples as rows and genomic regions as columns 
+  tdf <- df %>%
+    filter(rowSums(!is.na(.[])) >= min_coverage * ncol(.)) %>%
+    t() %>%
+    as.data.frame()
+  
+  # Second step:
+  # Remove low variance columns
+  # N_unique variable is used to ensure that certain level of variance is 
+  # present among the samples across a certain cite.
+  tdf <- tdf %>%
+    as.data.frame() %>%
+    select_if(~ var(.[], na.rm = TRUE) >=10) %>%
+    select_if(~ length(unique(.)) > n_unique) %>%
+    as.data.frame()
+  
+  return(tdf)
+}
+
+impute_and_standardise <- function(my_tdf){
+  #prepare the data matrix
+  matrixM <- my_tdf %>%
+    mutate_all(as.numeric) %>% # Convert all columns to numeric for analysis
+    as.matrix() %>% # Transform to matrix
+    impute.knn() # Impute missing values
+  
+  
+  # Scale the imputed data
+  stMatrix <- matrixM$data %>%
+    scale() # Standardize the numeric columns
+  return(stMatrix)
+}
+
+###A function for extracting the PCA scores###
+perform_pca <- function(stMatrix, metaDataFile){
+  # This function takes as input the standardised data matrix and 
+  # performs the pca analysis
+  shortNames <- rownames(stMatrix)
+  ### Perform PCA ###
+  pca_result <- prcomp(stMatrix, scale. = TRUE)
+  # Access the principal components
+  pc_scores <- as.data.frame(pca_result$x[, 1:2])
+  
+  # Gather metadata
+  Meta_data_file <- read_excel(metaDataFile)
+  # Extract tissue types into a vector
+  tissueType <- sub(".*_(\\w+)_r\\d+_.*", "\\1", rownames(pc_scores))
+  
+  ### Saving all meta information ###
+  pc_scores <- pc_scores %>%
+    mutate(ShortName = shortNames)%>% # save the rownames
+    mutate(TissueType = tissueType) %>% # save the tissuetypes
+    left_join(Meta_data_file %>% 
+    dplyr::select(ShortName, Age), by = "ShortName") %>% 
+    # save age and animal Id
+    mutate(AnimalId = substr(ShortName, 1, 2))
+  
+  n_sites=ncol(stMatrix)
+  return(list(pc_scores,n_sites))
+  
+}
+
+
+plot1 <- function(pc_scores_list){
+  # Function for plotting all the tissue types in same PCA figure
+  
+  pc_scores<-pc_scores_list[[1]]
+  n_sites<-pc_scores_list[2]
+  
+  ggplot() +
+    geom_point(data=pc_scores, size = 3, aes(x = PC1, y = PC2, color = Age, shape = TissueType)) +
+    labs(title = paste("PCA of methylation-% with",n_sites, "sites"),x = "Principal Component 1", y = "Principal Component 2",
+         color = "Age", shape = "Tissue Type") +
+    scale_color_gradient(low = "#000000", high = "#2978a0") +  
+    scale_shape_manual(values = c("BAT" = 19, "Blood" = 17, "Liver" = 15, "scAT" = 8)) +
+    theme_minimal() + # Use a minimal theme for a clean look
+    theme(legend.position = "right")+
+    guides(size = none)
+}
+plot2 <- function(pc_scores_list){
+  # Function for plotting individual tissues
+  # This plot will include lines to connect replicate samples
+  
+  
+  pc_scores <- pc_scores_list[[1]]
+  n_sites <- pc_scores_list[2]
+  
+  colors<-c("BAT" = "#a13d63", "Blood" = "#2978a0", "Liver" = "#68CBAC", "scAT" = "#fc8d62")
+  tissue<-pc_scores$TissueType[1]
+  color <- colors[tissue]
+  
+  
+  ret_plot <-  ggplot(pc_scores, aes(x = PC1, y = PC2, color= Age, group = AnimalId)) +
+      geom_point() +
+      geom_line() +
+      labs(title = 
+             paste(tissue, "sample PCA with", n_sites, "sites"),
+           x = "Principal Component 1", y = "Principal Component 2",
+           color = "Age") +
+      scale_color_gradient(low = "#000000", high = color) +
+      theme_minimal() +
+      theme(legend.position = "right",
+            title = element_text(size=9,hjust = 0.5,vjust = -0.4))
+  
+  return(ret_plot)
+} 
+ 
+```
+
+## PCA of all samples
+
+```{r PCA analysis}
+# Create dataframe by reading all the sample files
+df_full <- create_df(myInputFolder, msClock)
+
+# Perform PCA 
+pc_scores <- df_full %>%
+  filter_data(0.9,3)%>%
+  impute_and_standardise()%>%
+  perform_pca(.,metaDataFile);
+
+# Plot
+plot1(pc_scores)
+```
+## PCA of blood
+
+```{r}
+#extract tissue txpe
+tissueType <- sub(".*_(\\w+)_r\\d+_.*", "\\1", colnames(df_full));
+
+### Blood data ###
+blood_columns <- c(which(tissueType == "Blood"));
+#Do PCA 
+pc_scores_blood <- df_full[,blood_columns] %>%
+  filter_data(0.9,3)%>%
+  impute_and_standardise()%>%
+  perform_pca(.,metaDataFile);
+
+#Plot
+plot1(pc_scores_blood)
+blood_plot<-plot2(pc_scores_blood)
+blood_plot
+```
+```{r}
+### BAT data ###
+BAT_columns <- c(which(tissueType == "BAT"));
+#Do PCA 
+pc_scores_BAT <- df_full[,BAT_columns] %>%
+  filter_data(0.9,3)%>%
+  impute_and_standardise()%>%
+  perform_pca(.,metaDataFile);
+
+#Plot
+BAT_plot <- plot2(pc_scores_BAT)
+BAT_plot
+```
+```{r}
+### Liver data ###
+liver_columns <- c(which(tissueType == "Liver"));
+#Do PCA 
+pc_scores_liver <- df_full[,liver_columns] %>%
+  filter_data(0.9,3)%>%
+  impute_and_standardise()%>%
+  perform_pca(.,metaDataFile);
+
+#Plot
+liver_plot <- plot2(pc_scores_liver)
+liver_plot
+```
+```{r}
+### scAT data ###
+scAT_columns <- c(which(tissueType == "scAT"));
+#Do PCA 
+pc_scores_scAT <- df_full[,scAT_columns] %>%
+  filter_data(0.9,3)%>%
+  impute_and_standardise()%>%
+  perform_pca(.,metaDataFile);
+
+#Plot
+scAT_plot <- plot2(pc_scores_scAT)
+scAT_plot
+```
+
+```{r}
+
+# Arrange the plots using grid.arrange
+combined_plot<-grid.arrange(plot2(pc_scores_blood), plot2(pc_scores_liver), plot2(pc_scores_BAT), plot2(pc_scores_scAT), ncol = 2)
+```
+

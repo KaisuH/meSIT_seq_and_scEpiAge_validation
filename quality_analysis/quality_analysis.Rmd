@@ -1,0 +1,746 @@
+---
+title: "Quality analysis"
+author: "Kaisu Hiltunen"
+date: "2024-01-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Analysis of library quality
+```{r libraries, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+library(knitr)
+```
+
+```{r working directory}
+setwd("~/R/meSIT_seq_and_scEpiAge_validation/quality_analysis/")
+data_folder_path <- "Data"
+```
+
+This document summarises the three different libraries: Custom (S183), xGen Nextera (S184), and No Enrichment (S185). The libraries are compared in duplication rates, alignment rates and summarised in the end. For the Custom library more detailed analysis is performed and fastq screen and lambda duplication rates are shown.
+
+## Helper functions
+
+```{r general helper functions, echo=FALSE, message=FALSE, warning=FALSE}
+prepare_file_path<-function(name_pattern){
+  selected_files <- grep(name_pattern, 
+                       list.files(path = data_folder_path),
+                       value = TRUE)
+  # Prepend the Data folder path to each file name
+  selected_files <- paste0(data_folder_path, "/", selected_files)
+  return(selected_files)
+  }
+read_files <- function(selected_files, bind_rows){
+  # This function reads the files in selected files
+  # Optionally it also binds them by rows
+  data_list <- lapply(selected_files, 
+                      function(file) data<-read.table(file,
+                      header = TRUE, sep = "\t", check.names = FALSE))
+  if (bind_rows==TRUE){
+    # Combine the data frames row-wise
+    data_list <- bind_rows(data_list)
+  }
+  
+  return(data_list)
+}
+```
+
+```{r functions for mbias, echo=FALSE, message=FALSE, warning=FALSE}
+#colors: "#2978a0", "#a13d63", "#fc8d62", "#66c2a5"
+#colorblind colors '#CC6677', '#332288', '#DDCC77', '#117733', '#88CCEE', '#882255', '#44AA99', '#999933', '#AA4499'. Bad data: '#DDDDDD'
+
+read_mbias <- function(selected_files) {
+  # Use read_files helper function to read the selected files
+  data_list <- read_files(selected_files, bind_rows=FALSE)
+  
+  # Melt the data for better ggplot2 compatibility
+  melted_data <- reshape2::melt(data_list, id.vars = "Position (bp)")
+  ?melt
+  return(melted_data)
+}
+
+plot_mbias <- function(melted_data, title_string, my_size){
+  # Function for plotting M-bias
+      
+  p<-ggplot(melted_data, 
+            aes(x = `Position (bp)`, 
+                y = value, color = variable)) +
+      geom_line(linewidth = my_size) +
+      labs(title = title_string,
+           x = "Position (bp)",
+           y = "Methylation percentage",
+           color = "samples") +
+      theme_minimal()+
+      ylim(0,100)+
+      theme(
+          legend.position = "none",
+          legend.title = element_blank(), # Remove legend title
+          panel.grid.minor.x = element_blank()   
+          )
+  
+  return(p)
+}
+
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Read the TSV file
+#file_path <- "Data/bismark_alignment_S184_qc4.tsv"
+#data <- read_tsv(file_path)
+
+# Add a new column 'No genomic sequence' with zero values
+#data$'No genomic sequence' <- 0
+
+# Write the updated data frame back to a TSV file
+#write_tsv(data, file_path)
+```
+
+```{r functions alignment type, echo=FALSE, message=FALSE, warning=FALSE}
+read_alignment_files<- function(selected_files, output_file){
+  print(selected_files)
+  # Use read_files helper function to read files
+  combined_data <- read_files(selected_files, bind_rows=TRUE)
+  
+  #Add a total read column
+  combined_data$`Total reads before alignment` <- 
+    rowSums(combined_data[,-1])
+  
+  # Save the data frame to a CSV file
+  write.table(combined_data, file = paste0(data_folder_path, "/",output_file), 
+              sep = "\t", row.names = FALSE)
+  
+  # Reshape the data for ggplot
+  data_long <- tidyr::gather(combined_data, 
+                             key = "Alignment Category", 
+                             value = "Count", 
+                             -Category)     %>%
+    group_by(Category) %>% # Calculate percentages
+    mutate(Percentage = Count / (sum(Count)/2) * 100)
+  
+  return(data_long)
+}
+
+shape_df_for_boxplot <-function(alignment_df, library_name){
+  # Function for shaping the alignment dfs for the boxplot
+  #     - removing the total reads rows 
+  #     - adding the library column
+  #     - sorting the categories to make plotting order more aesthetic
+  
+  # Filter rows where Alignment Category is not "Total reads before alignment"
+  # We dont need that for the boxplot
+  align_plot_df <- alignment_df %>%
+      filter(`Alignment Category` != "Total reads before alignment")%>%
+      filter(`Alignment Category` != "No Genomic Sequence")
+  
+  # Add the column for Library identfier
+  align_plot_df$Library<- library_name
+  
+  # Reorder the levels of the Alignment Category factor
+  align_plot_df$`Alignment Category` <- factor(
+    align_plot_df$`Alignment Category`, 
+    levels = c("Aligned Uniquely", 
+               "Did Not Align", 
+               "Aligned Ambiguously")) 
+               #,"No Genomic Sequence"))
+  
+  return(align_plot_df)
+}
+
+plot_alignment_type<-function(data_percentage, library){
+  # Filter rows where Alignment Category is not "Total reads before alignment"
+  data_percentage <- data_percentage %>%
+    filter(`Alignment Category` != "Total reads before alignment")
+  
+  # Create a vertical bar plot with colors indicating alignment type
+  plot <- ggplot(data_percentage, aes(x = Category, 
+                              y = Percentage, 
+                              fill = `Alignment Category`)) +
+    geom_bar(stat = "identity", position = "stack", alpha=0.8)  +
+    labs(title = paste0("Alignment of reads ",library),
+         x = "Custom enrichment library samples",
+         y = "Alignment percentage") +
+    theme_minimal() +
+    guides(fill = guide_legend(nrow = 2))+
+    theme(legend.position = "bottom",
+        axis.text.x = element_blank(),# Remove axis text 
+        legend.title = element_blank(),  # Remove legend title
+        panel.grid.minor.x = element_blank()   # Remove minor vgridlines
+        )
+  return(plot)
+}
+```
+
+```{r functions for deduplication analysis, echo=FALSE, message=FALSE, warning=FALSE}
+read_deduplication_files<- function(selected_files, output_file, bind){
+  
+  # Use read_files helper function to read files.
+  combined_data <- read_files(selected_files, bind_rows = bind)
+  
+  # Reshape the data for ggplot.
+  # Calculate the percentage.
+  combined_data$`Total reads before deduplication` <- 
+    combined_data$`Deduplicated reads (remaining)` + 
+    combined_data$`Duplicate reads (removed)`
+  combined_data$PercentageDeduplicated <- 
+    (combined_data$`Deduplicated reads (remaining)` / 
+       combined_data$`Total reads before deduplication`) * 100
+  combined_data$PercentageDuplicate <- 
+    (combined_data$`Duplicate reads (removed)` / 
+       combined_data$`Total reads before deduplication`) * 100
+  
+  # Save the data frame to a CSV file
+  write.table(combined_data, file = paste0(data_folder_path, "/",output_file), 
+              sep = "\t", row.names = FALSE)
+  
+  data_long <- combined_data %>%
+    tidyr::gather(key = "Assignment", value = "Percentage", 
+                  PercentageDeduplicated, 
+                  PercentageDuplicate,
+                           -Category) %>%
+    arrange(Category, Assignment)
+  return(data_long)
+}
+
+shape_df_for_duplplot <-function(duplication_df, library_name){
+  # Function for shaping the dfs for a combined duplication boxplot
+  #     - removing the redundant rows (duplicated + deduplicated = 100 %)
+  #     - adding the library column
+  
+  # Filter rows where Alignment Category is not "Total reads before alignment"
+  # We dont need that for the boxplot
+  dupl_plot_df <- duplication_df %>%
+      filter(`Assignment` == "PercentageDuplicate")
+  
+  # Add the column for Library identfier
+  dupl_plot_df$Library<- library_name
+  
+  
+  return(dupl_plot_df)
+}
+
+plot_dedups<-function(df, library){
+  ggplot(df, aes(x = Category, y = Percentage,
+                 fill=factor(Assignment,
+                             levels=c("PercentageDuplicate",
+                                      "PercentageDeduplicated")))) +
+    geom_bar(stat = "identity", position="stack", alpha=0.8) +
+    labs(title = "Percentage of deduplicated and duplicate reads",
+         x = paste(library, "enrichment library samples"),
+         y = "Percentage") +
+    scale_fill_manual(values = c("PercentageDuplicate" = "black", 
+                                 "PercentageDeduplicated" = "#2978a0"),
+                      labels = c("Duplicate (removed)", 
+                                 "Deduplicated")) +
+    theme_minimal() +
+    theme(axis.text.x = element_blank(),
+          legend.position = "bottom",
+          legend.title = element_blank())  # Remove legend title
+}
+```
+
+```{r functions fastq, echo=FALSE, message=FALSE, warning=FALSE}
+read_fastq_files<- function(selected_files, output_file){
+  
+  # Use read_files function to read selected files
+  combined_data <- read_files(selected_files, bind_rows = TRUE)
+  
+  # Reshape the data for ggplot
+  data_long <- tidyr::gather(combined_data, 
+                             key = "Alignment Category", 
+                             value = "Count", 
+                             -Category)     %>%
+    group_by(Category) %>% # Calculate percentages
+    mutate(Percentage = Count / sum(Count) * 100)
+  
+  #Add a total read column
+  combined_data$`Total reads before alignment` <- 
+    rowSums(combined_data[,-1])
+  
+  # Save the data frame to a CSV file
+  write.table(combined_data, file = paste0(data_folder_path, "/",output_file),
+              sep = "\t", row.names = FALSE)
+  
+  return(data_long)
+  }
+
+
+plot_fastq_screen<-function(data_percentage, library){
+  # Create a vertical bar plot with colors indicating mapped genomes
+  plot <- ggplot(data_percentage, aes(x = Category, 
+                              y = Percentage, 
+                              fill = `Alignment Category`)) +
+    geom_bar(stat = "identity", position = "stack", alpha=0.8)  +
+    labs(title = paste0("Alignment of reads ",library),
+         x = "Custom enrichment library samples",
+         y = "Mapped percentage",
+         fill = "Screened genomes") +
+    theme_minimal() +
+    scale_fill_manual(values = c(c("#2978a0", "#68CBAC", "#710C32", 
+                                   "#fc8d62", "#F768A1", "#FDBF6F", 
+                                   '#88CCEE', "black", "#E41A1C", "#FF7F00", 
+                                   "#4DAF4A", "#FFC425", "#5E3C99", "#1F78B4",
+                                   "grey",'#CC6677', '#332288')))+
+    guides(fill = guide_legend(ncol = 3,title.position = "top"))+
+    theme(legend.position = "bottom",
+        axis.text.x = element_blank(), 
+        legend.text = element_text(size=7),
+        panel.grid.minor.x = element_blank(),  
+        legend.title.align=0.5)
+  return(plot)
+}
+
+# Function to calculate mean and standard deviation for a given alignment category
+calculate_stats <- function(data, category, cat_column) {
+  subset_data <- data[data$'Alignment Category' == category,]
+  mean_value <- mean(subset_data$Percentage)
+  sd_value <- sd(subset_data$Percentage)
+  return(c(mean = mean_value, sd = sd_value))
+}
+```
+
+```{r library summary functions, echo=FALSE, message=FALSE, warning=FALSE}
+#Calculate how many reads get discarded in each step 
+summarise_library <- function(filenames, library) {
+  #This function builds a data frame summarising the whole library in one place
+  temp_data <- read.table(filenames[1], header = TRUE, sep = "\t", na.strings = "", check.names = FALSE)
+  
+  data <- data.frame(temp_data[1])
+  
+  for (filename in filenames) {
+    temp_data <- read.table(filename, header = TRUE, sep = "\t", na.strings = "", check.names = FALSE)
+    
+    data <- merge(data, temp_data, by="Category", all.x=TRUE)
+  }
+  
+  # Rename the column Total
+  colnames(data)[colnames(data) == "TotalReads"] <- "Total reads before deduplication"
+
+  return(data)
+}
+
+plot_summary <- function(data, library){
+  
+  # Filter columns of interest
+  selected_columns <- c("Total reads before alignment", "Aligned Uniquely", "Aligned Ambiguously", "Total reads before deduplication", "Deduplicated reads (remaining)")
+   
+  selected_data <- data %>%
+    #select("Category", selected_columns) %>%
+    select("Category",all_of(selected_columns)) %>%  # Updated this line
+    
+    # Normalize values by dividing by Total reads before alignment and multiplying by 100
+    mutate(across(-Category, ~ as.numeric(.) / as.numeric(data$`Total reads before alignment`) * 100)) %>%
+    tidyr::gather(key = "Variable", value = "Value", -"Category") %>%
+    mutate(Variable = factor(Variable, levels = selected_columns))  # Set factor levels
+  
+  
+  # Calculate mean values
+  mean_values <- selected_data %>%
+    group_by(Variable) %>%
+    summarise(Mean = mean(Value))
+  
+  # Make boxplot
+  ggplot(selected_data, aes(x = Variable, y = Value)) +
+    geom_boxplot() +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(title = paste("Processing of", library, "library"), x= "Data processing step",y = "Percentage of reads")+
+    geom_text(data = mean_values, aes(x = Variable, y = Mean, label = sprintf("%.2f", Mean)),
+                vjust = 0, color = "black", size = 3, angle = 0, hjust = 3)
+  
+}
+```
+
+# Custom library Lambda
+## M-bias
+In the M-bias plot it can be seen that the synthetic basepairs in the beginning of the reads are almost 100% methylated, as should be. The actual reads of lambda starting after the 10th bp are not methylated and this is very well reflected in the curve. The false positive bias is also decreasing towards the end of the read.
+```{r mbias Lambda R1}
+selected_files <- "Data/bismark_mbias_Lambda_S183_R1.tsv"
+# Read the data for Lambda control samples
+Lambda_data<-read_mbias(selected_files)
+# Plot M-bias using ggplot2
+lambda_R1_plot <- plot_mbias(Lambda_data,"R1 CpGs", 1)+
+  guides(color="none")+
+  scale_color_manual(values = 
+                       c("#2978a0", "#710C32", "#fc8d62", "#68CBAC"))
+```
+
+There is no bias in the read 2.
+```{r mbias lambda R2, echo=FALSE, message=FALSE, warning=FALSE}
+selected_files<-"Data/bismark_mbias_Lambda_S183_R2.tsv"
+# Read the data for Lambda control samples
+Lambda_data_R2<-read_mbias(selected_files)
+
+# Plot M-bias using ggplot2
+lambda_R2_plot <- plot_mbias(Lambda_data_R2,"R2 CpGs", 1)+
+    guides(color="none")+
+    scale_color_manual(values = c("#2978a0", "#710C32", "#fc8d62", "#68CBAC"))
+```
+```{r}
+# Combine plots and add a common title
+combined_plot <- grid.arrange(lambda_R1_plot, 
+                              lambda_R2_plot, 
+                              ncol = 2, 
+                              top = "M-bias in Custom library Lambda samples")
+```
+Here is the M-bias of all samples in the custom enrichment library. The samples are marked in blue, and the mean and 0.25% and 0.75% quantiles are marked in black and green. 
+```{r mbias custom R1, echo=FALSE, message=FALSE, warning=FALSE}
+selected_files <- prepare_file_path("bismark_mbias_R1")
+mbias_samples <- read_mbias(selected_files)
+quantiles_df <- mbias_samples %>%
+  group_by(`Position (bp)`) %>%
+  summarise(Q0.25 = quantile(value, 0.25),
+            Q0.5 = quantile(value, 0.5),
+            Q0.75 = quantile(value, 0.75))
+
+S183_R1_plot <- plot_mbias(
+  mbias_samples, 
+  "R1 CpGs", 0.5)+
+    scale_color_manual(
+      values = c(rep("#2978a0", length(mbias_samples$variable))))+
+  #Add the quantile lines
+    geom_line(data = quantiles_df, 
+              aes(x = `Position (bp)`, y = Q0.25), 
+              linetype = "solid", color = "#68CBAC", size=0.7) +
+    geom_line(data = quantiles_df, 
+              aes(x = `Position (bp)`, y = Q0.5), 
+              linetype = "solid", color = "black", size=0.7) +
+    geom_line(data = quantiles_df, 
+              aes(x = `Position (bp)`, y = Q0.75), 
+              linetype = "solid", color = "#68CBAC", size=0.7)+
+  theme_minimal()+
+  guides(color="none")
+```
+
+
+```{r mbias custom R2, echo=FALSE, message=FALSE, warning=FALSE}
+# Filter files containing "mbias_alignment_custom_sample_qc" in their names
+selected_files <- prepare_file_path("mbias_R2_S183_")
+mbias_samples_R2 <- read_mbias(selected_files)
+quantiles_df_R2 <- mbias_samples_R2 %>%
+  group_by(`Position (bp)`) %>%
+  summarise(Q0.25 = quantile(value, 0.25),
+            Q0.5 = quantile(value, 0.5),
+            Q0.75 = quantile(value, 0.75))
+
+S183_R2_plot <- plot_mbias(
+  mbias_samples_R2, 
+  "R2 CpGs", 0.5)+
+    scale_color_manual(
+      values = c(rep("#2978a0", length(mbias_samples_R2$variable))))+
+  #Add the quantile lines
+    geom_line(data = quantiles_df_R2, 
+              aes(x = `Position (bp)`, y = Q0.25), 
+              linetype = "solid", color = "#68CBAC", size=0.7) +
+    geom_line(data = quantiles_df_R2, 
+              aes(x = `Position (bp)`, y = Q0.5), 
+              linetype = "solid", color = "black", size=0.7) +
+    geom_line(data = quantiles_df_R2, 
+              aes(x = `Position (bp)`, y = Q0.75), 
+              linetype = "solid", color = "#68CBAC", size=0.7)+
+  theme_minimal()+
+  guides(color="none")
+```
+```{r}
+# Combine plots and add a common title
+combined_plot <- grid.arrange(S183_R1_plot, 
+                              S183_R2_plot, 
+                              ncol = 2, 
+                              top = "M-bias in Custom library mouse samples")
+```
+
+## Sample alignment in Custom library
+Bismark is a widely used software tool for aligning bisulfite-treated DNA sequences to a reference genome, which is a critical step in DNA methylation analysis. The Bismark alignment rate refers to the percentage of reads that successfully align to a reference genome during the process of bisulfite sequencing data analysis. 
+Aligned uniquely: The percentage of reads that align to a unique location in the reference genome. 
+
+Aligned ambiguously: The percentage of reads that align to multiple locations in the genome. 
+
+Did not align: The percentage of reads that do not align to the reference genome. This can happen due to various reasons, including sequencing errors, low-quality reads, or genomic regions that are difficult to map.
+
+No genomic sequence: The percentage of reads that do not contain genomic sequence information. These reads may include technical artifacts, adapter sequences, or other non-genomic content.
+
+High alignment rates, especially for uniquely aligned reads, are desirable as they indicate successful mapping of sequencing data to the reference genome. 
+
+```{r read sample alignment data}
+# First we load the alignment data which was exported from multiqc reports.
+# Reports are in .tsv files and each library has four files.
+# Here, the four files get merged into one .tsv per library
+# and named merged_..._library_alignment.tsv
+
+# Custom library aka S183
+selected_files <- prepare_file_path("bismark_alignment_S183")
+C_alignment_df <- read_alignment_files(
+  selected_files, "merged_S183_library_alignment.tsv")
+
+# xGen library aka S184
+selected_files <- prepare_file_path("bismark_alignment_S184")
+X_alignment_df <- read_alignment_files(
+  selected_files, "merged_S184_library_alignment.tsv")
+
+# No enrichment library aka S185
+selected_files <- prepare_file_path("bismark_alignment_S185")
+N_alignment_df <- read_alignment_files(
+  selected_files, "merged_S185_library_alignment.tsv")
+```
+
+The Custom library mouse samples show very homogeneous alignment rates across samples.
+```{r plot custom library sample alignment data, echo=FALSE, message=FALSE, warning=FALSE}
+align_C_plot <- plot_alignment_type(C_alignment_df, "Custom library") 
+align_C_plot + 
+  scale_fill_manual(values = c("#2978a0", "#68CBAC", "#710C32", "#fc8d62" )) 
+```
+
+Statistics of Custom library mouse samples.
+```{r stats on alignment type, echo=FALSE, message=FALSE, warning=FALSE}
+# Get unique alignment categories
+alignment_categories <- unique(C_alignment_df$"Alignment Category")
+# Create a data frame to store results
+results_df <- data.frame(
+  Sequence_set = character(),
+  Average_Percentage = numeric(),
+  Standard_Deviation = numeric(),
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+# calculate results for each alignment category
+for (category in alignment_categories) {
+  stats <- calculate_stats(C_alignment_df, category)
+  results_df <- rbind(results_df, c(category, 
+                                    signif(stats[1],digits=2), 
+                                    signif(stats[2],digits=2)))
+}
+# Manually set column names without 'X.'
+colnames(results_df) <- c("Alignment type", "Average alignment %", "Std. Dev")
+
+kable(as.matrix(results_df))
+```
+### Comparison of libraries
+Comparing the Custom, xGen Nextera, and control library alignment rates with a boxplot.
+```{r alignment boxplot, echo=FALSE, message=FALSE, warning=FALSE}
+# First prepare the alignment dfs for a combined boxplot with all of the libs
+C_align_plot_df <- shape_df_for_boxplot(C_alignment_df, "Custom")
+X_align_plot_df <- shape_df_for_boxplot(X_alignment_df, "xGen Nextera")
+N_align_plot_df <- shape_df_for_boxplot(N_alignment_df, "Control")
+
+# Create the combined df
+combined_align_plot_df <- rbind(C_align_plot_df,
+                                    X_align_plot_df, 
+                                    N_align_plot_df)
+
+# Reorder the levels of the Alignment Category factor
+combined_align_plot_df$`Library` <- factor(
+  combined_align_plot_df$`Library`, 
+  levels = c("Custom", 
+             "xGen Nextera", 
+             "Control")) 
+
+plot <- ggplot(combined_align_plot_df, aes(x = `Alignment Category`, 
+                              y = Percentage, 
+                              fill = `Library`, color=`Library`)) +
+    geom_boxplot(alpha=0.6)  +
+    scale_fill_manual(values = c("#2978a0", "#710C32", "#fc8d62"))+
+    scale_color_manual(values = c("#2978a0", "#710C32", "#fc8d62"))+
+    labs(title = paste0("Alignment of reads"),
+         y = "Percentage of reads") +
+    theme_minimal() +
+    guides(fill = guide_legend(nrow = 3))+
+    theme(legend.background = element_rect(fill = "white", 
+                                           colour = "grey", 
+                                           linewidth = 0.5),
+          legend.justification = c(1, 1),  # legend position to the top-right
+          legend.position = c(1, 1),       # Position legend inside the plot 
+          axis.title.x = element_blank(),  # Remove x-axis title
+          panel.grid.minor.x = element_blank()   # Remove minor vgridlines
+        )
+plot
+
+```
+
+
+## Analysis of duplication rate
+
+
+```{r load duplication rate files, echo=FALSE, message=FALSE, warning=FALSE}
+# Custom library aka S183
+selected_files <- prepare_file_path("bismark_deduplication_S183_qc")
+S183_deduplication_df <- read_deduplication_files(
+  selected_files, 
+  "merged_S183_library_deduplication.tsv", bind=TRUE)
+
+# xGen library aka S184
+selected_files <- prepare_file_path("bismark_deduplication_S184_qc")
+S184_deduplication_df <- read_deduplication_files(
+  selected_files, 
+  "merged_S184_library_deduplication.tsv", bind=TRUE)
+
+# no enrichment library aka S185
+selected_files <- prepare_file_path("bismark_deduplication_S185_qc")
+S185_deduplication_df <- read_deduplication_files(
+  selected_files, 
+  "merged_S185_library_deduplication.tsv", bind=TRUE)
+
+```
+
+
+```{r duplication rate plot}
+plot_dedups(S183_deduplication_df, "Custom")
+#plot_dedups(S184_deduplication_df, "xGen Nextera")
+#plot_dedups(S185_deduplication_df, "No enrichment")
+```
+
+## Comparison of library duplication rates
+
+Comparing the Custom, xGen Nextera, and control library alignment rates with a boxplot.
+```{r duplication boxplot, echo=FALSE, message=FALSE, warning=FALSE}
+
+S183_dupl_df <- shape_df_for_duplplot(S183_deduplication_df, "Custom")
+S184_dupl_df <- shape_df_for_duplplot(S184_deduplication_df, "xGen Nextera")
+S185_dupl_df <- shape_df_for_duplplot(S185_deduplication_df, "Control")
+
+combined_dupl_plot_df <- rbind(S183_dupl_df,
+                                S184_dupl_df,
+                                S185_dupl_df)
+
+# Reorder the levels of the Alignment Category factor
+combined_dupl_plot_df$`Library` <- factor(
+  combined_dupl_plot_df$`Library`, 
+  levels = c("Custom", 
+             "xGen Nextera", 
+             "Control")) 
+  
+
+plot <- ggplot(combined_dupl_plot_df, aes(x = `Library`, 
+                              y = Percentage, 
+                              fill = `Library`, color=`Library`)) +
+    geom_boxplot(alpha=0.6)  +
+    scale_fill_manual(values = c("#2978a0", "#710C32", "#fc8d62"))+
+    scale_color_manual(values = c("#2978a0", "#710C32", "#fc8d62"))+
+    labs(title = "Duplication of reads",
+         x= "Library",
+         y = "Percentage of duplicated reads") +
+    theme_minimal() +
+    theme(legend.position = "none",       # Justify the legend box to the right
+          #axis.title.x = element_blank(),  # Remove x-axis title
+          panel.grid.minor.x = element_blank()   # Remove minor vgridlines
+        )
+
+plot
+
+```
+
+```{r duplication stats samples in custom library, echo=FALSE, message=FALSE, warning=FALSE}
+# Calculate the average percentage of reads that 
+#fall into the category of 'Deduplicated'
+average_percentage_deduplicated <- mean(S183_deduplication_df$Percentage
+                             [S183_deduplication_df$Assignment == 
+                                 "PercentageDeduplicated"])
+sd_percentage_deduplicated <- sd((S183_deduplication_df$Percentage
+                       [S183_deduplication_df$Assignment == 
+                           "PercentageDeduplicated"]))
+# Print the result
+cat("Average deduplicated reads percentage in sample reads:", 
+    round(average_percentage_deduplicated, 2), "%\n")
+# Print the result
+cat("Standard deviation in sample reads:", 
+    round(sd_percentage_deduplicated, 2), "%\n")
+
+```
+
+```{r duplication plot lambda}
+selected_files <- prepare_file_path("bismark_deduplication_S183_lambda")
+S183_lambda_dedup_df <- read_deduplication_files(
+  selected_files, 
+  "merged_S183_library_deduplication_lambda.tsv", bind=TRUE)
+
+
+plot_dedups(S183_lambda_dedup_df, "Lambda from Custom")
+```
+```{r duplication stats lambda, echo=FALSE, message=FALSE, warning=FALSE}
+# Calculate the average percentage of reads that 
+#fall into the category of 'Deduplicated'
+mean_dd_lambda <- mean(S183_lambda_dedup_df$Percentage
+                             [S183_lambda_dedup_df$Assignment == 
+                                 "PercentageDeduplicated"])
+sd_dd_lambda <- sd((S183_lambda_dedup_df$Percentage
+                       [S183_lambda_dedup_df$Assignment == 
+                           "PercentageDeduplicated"]))
+# Print the result
+cat("Average deduplicated reads in custom library lambda control:", 
+    round(mean_dd_lambda, 2), "%\n")
+# Print the result
+cat("Standard deviation:", 
+    round(sd_dd_lambda, 2), "%\n")
+```
+
+## Alignment to various genomes
+
+Here the alignments to different sequences are illustrated.
+
+```{r fastq screen}
+# Filter files containing "fastq_screen" in their names
+selected_files <- prepare_file_path("fastq_screen")
+S183_fastq_df <- read_fastq_files(selected_files, 
+                                  "merged_custom_library_align_categories.tsv")
+plot_fastq_screen(S183_fastq_df, "from custom library")
+```
+
+
+```{r calculate stats for genomic mapping, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Get unique alignment categories
+alignment_categories <- unique(S183_fastq_df$"Alignment Category")
+# Create a data frame to store results
+results_df <- data.frame(
+  Sequence_set = character(),
+  Average_Percentage = numeric(),
+  Standard_Deviation = numeric(),
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+# calculate results for each alignment category
+for (category in alignment_categories) {
+  stats <- calculate_stats(S183_fastq_df, category)
+  results_df <- rbind(results_df, c(category, 
+                                    signif(stats[1],digits=2), 
+                                    signif(stats[2],digits=2)))
+}
+# Manually set column names without 'X.'
+colnames(results_df) <- c("Sequence set", "Average alignment %", "Std. Dev")
+
+kable(as.matrix(results_df))
+```
+
+# Lost reads analysis
+
+```{r S183 library summary}
+# Read the text files into a data frame
+C_all_read_data <- summarise_library(c(
+  "Data/merged_S183_library_alignment.tsv",
+  "Data/merged_S183_library_deduplication.tsv"))
+plot_summary(C_all_read_data, "Custom")
+```
+```{r S184 library summary}
+# Read the text files into a data frame
+X_all_read_data <- summarise_library(c(
+  "Data/merged_S184_library_alignment.tsv", 
+  "Data/merged_S184_library_deduplication.tsv"))
+plot_summary(X_all_read_data, "xGen Nextera")
+```
+```{r S185 library summary}
+# Read the text files into a data frame
+N_all_read_data <- summarise_library(c(
+  "Data/merged_S185_library_alignment.tsv", 
+  "Data/merged_S185_library_deduplication.tsv"))
+plot_summary(N_all_read_data, "Control")
+```
+
+# Software versions
+Bowtie2
+Software	Version
+Bismark	0.24.2
+Cutadapt	3.5
+FastQ Screen	0.14.1
+FastQC	0.11.9

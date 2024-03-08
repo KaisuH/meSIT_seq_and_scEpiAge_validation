@@ -1,0 +1,348 @@
+---
+title: "Coverage_Analysis"
+author: "Kaisu Hiltunen"
+date: "2024-01-03"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Coverage and demultiplexing analysis
+
+```{r libraries, echo=FALSE,  message=FALSE, warning=FALSE}
+library(Rsamtools)
+library(GenomicRanges)
+library(ggplot2)
+library(dplyr)# For manipulating data
+library(tibble)# For manipulating data
+library(tools) # For handling strings
+library(ggridges)#used for ridge density plotting which was not used in the end
+library(car)#variance analysis
+library(scales)#plotting axis
+library(gridExtra)#plotting multiple plots at once
+library(ggpubr)#Adding shared text to muliple plots
+library(ggpattern)#add patterns to histogram
+library(grid)
+library(tidyr)
+library(beanplot) #for plotting the coverage
+library(forcats) #for ordering the coverage plot
+setwd("C:/Users/khiltunen/Documents/R/coverage_analysis")
+```
+
+
+```{r demultiplexing functions}
+get_sums <- function(df){
+  # A function to calculate the respective number of reads 
+  # for Lambda, NC, and samples in the data frame df.
+  Lam <- sum(df[grep("^La_", df$sample_id), ]$templates)
+  NC <- sum(df[grep("^NC_", df$sample_id), ]$templates)
+  Samples <- sum(df[grep("^[01]", df$sample_id), ]$templates)
+  Unmatched <- sum(df[grep("unmatched", df$sample_id), ]$templates)
+  # Create a data frame
+  result <- data.frame(
+    category = factor(c("Lambda", "Samples", "NC", "Unmatched"), 
+                      levels = c("Lambda", "Samples", "NC", "Unmatched")),
+                      value = c(Lam, Samples, NC, Unmatched)
+  )
+  result$percentage <- sprintf("%.3f %%",result$value/sum(result$value)*100)
+  
+  return(result)
+}
+
+get_library <- function(df){
+  # A function to subset the data frame to include 
+  # only samples ending with "_C", "_X", or "_N"
+  
+  # Extract samples ending with "_C" and the subsequent "unmatched" rows
+  selected <- df[grep("_C$|unmatched", df$sample_id), ]
+  # Subset the data frame up to the last occurrence
+  first_index <- min(grep("_C$", selected$sample_id))
+  last_index <- max(grep("_C$", selected$sample_id))+1
+  C_df <- selected[first_index:last_index, ]
+  
+  # Repeat for X and N
+  selected <- df[grep("_X$|unmatched", df$sample_id), ]
+  first_index <- min(grep("_X$", selected$sample_id))
+  last_index <- max(grep("_X$", selected$sample_id))+1
+  X_df <- selected[first_index:last_index, ]
+  
+  selected <- df[grep("_N$|unmatched", df$sample_id), ]
+  first_index <- min(grep("_N$", selected$sample_id))
+  last_index <- max(grep("_N$", selected$sample_id))+1
+  N_df <- selected[first_index:last_index, ]
+  
+  reslist <- list(C_df, X_df, N_df)
+  names(reslist) <- c("C_df", "X_df", "N_df")
+  return(reslist)
+}
+
+bar_plot <- function(data, library){
+  # Function to create a bar plot for one library demultiplexing statistics
+  plot<- ggplot(data, aes(x = category, y = log(value), fill = category)) +
+      geom_bar(stat = "identity", color = "black") +
+      theme_minimal() +
+      scale_fill_manual(values = c(
+        "#68CBAC", "#fc8d62", "#8da0cb","#a13d63"))+
+      labs(title = paste0(library, " library"), 
+           fill = "Sample type", 
+           y = "Logarithm of number of reads")+
+      ylim(0,18)+
+      theme(
+        legend.position = "none",
+        plot.title = element_text(size = 11),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 8,angle = 90, vjust = 0.5, hjust=1))
+  return(plot)
+}
+```
+
+```{r coverage functions}
+# HISTOGRAM
+plot_histogram <- function(df){
+  ggplot(data = df, 
+         aes(x = values, fill = ind), linecolor="black") +
+    stat_bin(bins = 40,
+             position = "identity", 
+             aes(y = ..count../sum(..count..)), alpha=0.55) +
+    scale_fill_manual(values = c( "#8da0cb","#a13d63")) +
+    scale_color_manual(values = c("#8da0cb","#a13d63"))+
+    labs(x = "Normalized and scaled coverage", 
+         y = "Normalized frequency", 
+         title = "A. Histogram of clock site coverage", 
+         fill = "Enrichment method",color="Library mean") +
+    # Add average density line
+    geom_vline(data=df, 
+               aes(xintercept = Avg_density, color = Enrichment), 
+               linetype = "dashed", size = 0.7) +  
+    #scale_color_manual(values = c( "#8da0cb","#a13d63")) +
+    theme_minimal()+
+    theme(
+      legend.position = c(.98, .98),
+      legend.justification = c("right", "top"),
+      legend.box.just = "right",
+      legend.margin = margin(6, 6, 6, 6),
+      axis.text.y = element_text(size = 8),
+      axis.text.x = element_text(size = 8),# Adjust axis text size
+      )
+}
+
+# BOXPLOT
+plot_boxplot <- function(df){
+  ggplot() +
+    geom_boxplot(data = df, 
+                 aes(x = ind, y = values, fill = ind), 
+                 alpha = 0.5, width = 0.5) +
+    scale_fill_manual(values = c(  "#8da0cb","#a13d63","#fc8d62")) +
+    labs(x = "Enrichment method", 
+         y = "Coverage", 
+         title = "B. Clock site coverage") +
+    theme_minimal()+
+    guides(fill=FALSE)+
+    theme(
+      axis.text.y = element_text(size = 8),  # Adjust axis text size
+      axis.text.x = element_text(size = 11),
+      )
+}
+  
+
+```
+
+
+
+
+# Deultiplexing analysis
+
+
+## Barplot of sample and control read numbers
+The different multiplexing analysis reveals the differences between the library 
+preparation methods. The enriched libraries have higher quantities of reads from 
+the lambda control, because this was not blocked with the blocking oligos. 
+The amount of unmatched reads are approximately the same in all libraries.
+```{r get the demultiplexing statistics}
+# Construct the tables for demultiplexing statistics of custom (C), xgen (X),
+# and no enrichment (N) libraries
+# Define the file location for demultiplexing statistics
+demux_file <- "~/R/coverage_analysis/demultiplexing_statistics.txt"
+# Read the file to a table
+demux_df <- read.table(demux_file, header = TRUE, sep = "\t")
+libs <- get_library(demux_df)
+
+# Calculate sum of the total number of templates
+N_data <- get_sums(libs$N_df)
+C_data <- get_sums(libs$C_df)
+X_data <- get_sums(libs$X_df)
+
+```
+
+```{r plot distibutions of demultiplexed reads}
+#Compare template distributions of Lambda, Neg Control, and 
+# Samples. 
+
+# Create three plots using the modified function
+
+plot1 <- bar_plot(C_data, "Custom")
+plot2 <- bar_plot(X_data, "xGen Nextera")
+plot3 <- bar_plot(N_data, "Non-enriched")
+
+#get_legend function from http://stackoverflow.com/questions/12539348/ggplot-separate-legend-and-plot
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+# Create a common legend
+legend <- get_legend(plot1 + theme(legend.position="right")+
+      theme_minimal())
+# Combine the plots and legend
+combined_plot <- grid.arrange(
+  arrangeGrob(plot1, plot2, plot3, ncol = 3),
+  legend,
+  ncol = 2,
+  widths = c(3, 1), 
+  top = textGrob("Distribution of reads in all libraries",
+                 gp=gpar(fontsize=14,font=1)))
+
+```
+
+
+
+## Demultiplexing efficiency
+```{r}
+#N_library_depth <- sum(N_data$value)
+#C_library_depth <- sum(C_data$value)
+#X_library_depth <- sum(X_data$value)
+#To normalise with the number of sample reads might be more justified
+#The Lambda values are not important for the age prediction
+
+N_library_depth <- N_data$value[2]
+C_library_depth <- C_data$value[2]
+X_library_depth <- X_data$value[2]
+
+knitr::kable(N_data, caption = "Demultiplexing results for non-enriched library")
+knitr::kable(C_data, caption = "Demultiplexing results for custom enrichment library")
+knitr::kable(X_data, caption = "Demultiplexing results for xGen enrichment library")
+```
+
+
+
+
+# Coverage
+```{r Clocksites, }
+# Read the mouse clock sites and create a dataframe with the sites
+msClock <- read.table("msClockSites_mm10.bed", header = FALSE, 
+                        sep = "\t",stringsAsFactors=FALSE, quote="")
+```
+
+
+
+# Average coverage per site from .cov files
+Here the average coverage per site is calculated from seqmonk reports based on covfiles
+
+The mean probe reads are normalised by dividing with library specific total read count and scaled with multiplying by 1 million.
+
+```{r}
+# This file contains the amounts of total reads in each library
+# from Seqmonk -> Reports -> DataStore Summary report
+library_read_depth<-read.table("covfiles_probe_report_corrected_tot_read_count_per_million.txt", header = TRUE, sep = "\t",stringsAsFactors=FALSE, quote="", check.names = FALSE)
+
+# Simplify library and column names
+colnames(library_read_depth) <- gsub("_", " ", gsub("Mean ", "", colnames(library_read_depth)))
+
+# Extract only necessary columns
+library_read_depth<-library_read_depth[,c(7,9,11)]
+
+plot_data<-library_read_depth%>%
+  stack()%>%
+  mutate(ind = fct_reorder(ind, values, .fun='median'))
+
+ 
+average_site_read_depth=colMeans(library_read_depth)
+  # Print column means
+print(average_site_read_depth)
+```
+
+```{r}
+
+# Convert ind to factor with custom order
+plot_data$ind <- factor(plot_data$ind, levels = c("Custom library", "xGen Nextera library", "Noenrichment library"))
+
+# Create the violin plot
+violin_plot<-ggplot(plot_data, 
+                    aes(x = ind, y = values, fill = ind)) +
+  geom_violin(trim = TRUE, 
+              scale = "width",
+              draw_quantiles = c(0.25, 0.5, 0.75), 
+              # Use a smaller bandwidth for closer density fit
+              adjust=0.5) +
+  scale_fill_manual(values = c("Custom library" = "#8da0cb", 
+                               "xGen Nextera library" = "#a13d63", 
+                               "Noenrichment library" = "#fc8d62")) +
+  labs(x = "Library", 
+       y = "Per million reads coverage depth", 
+       title = "Violin plot of site read depth") +
+  theme_minimal() +
+  theme(legend.position = "none")
+violin_plot
+
+```
+
+## Statistical measures
+
+Comparing the difference of clocksite coverage in the custom and xGen enriched libraries. In order to minimise the impact of batches, the mean coverage of the clock sites is first normalised with the respective library depth. The resulting normalised coverage is then multiplied with 10\textsuperscript{6}, to avoid very small numbers. Then T-test is performed on the normalised clocksite coverage per million means. Since we see in the histogram that the data is normally distributed, the t-test can be applied to measure the likelihood that the samples indeed are from different distributions.
+
+```{r testing the normality assumption}
+depth_C<-library_read_depth[[1]] #custom
+depth_X<-library_read_depth[[2]] #xgen
+# Perform shapiro wilk test to check if data is normally distributes
+shapiro_C <- shapiro.test(depth_C)
+shapiro_X <- shapiro.test(depth_X)
+# Print the result
+print(shapiro_X)
+print(shapiro_C)
+
+```
+With this small p-values we can reject the null hypothesis that the distributions are normally distributed. Therefore a non-parametric test, Wilcoxon sum, will be used. 
+```{r wilcoxon sum test}
+wilcox_results <- wilcox.test(depth_C, depth_X, paired = FALSE, alternative="greater", exact=FALSE, conf.int = TRUE)
+wilcox_results
+
+# Since the wilcox sum coefficient considers the rank of values, the correlation test ignores the same ranks to find the p-values. Setting exact = FALSE will avoid this issue
+# Alternative="greater" will test if x greater than y
+p<-wilcox_results$p.value
+p
+p_adjusted<-p.adjust(p, method = "bonferroni", n = length(depth_X))
+p_adjusted
+
+# Set up a side-by-side layout
+par(mfrow = c(1, 2))
+
+# Specify the bin width
+binwidth <- 0.5  # Adjust this value as needed
+seq(min(depth_C), max(depth_C), by = binwidth)
+hist(depth_C,breaks=40,xlim = range_both)
+hist(depth_X,breaks=40,xlim = range_both, add=TRUE)
+
+```
+
+
+```{r Statistical Analysis ANOVA}
+### ANOVA ### 
+# Create a dataframe
+data <- data.frame(
+    Values = c(depth_C, depth_X),
+    Group = rep(c("C", "X"), each = length(depth_C))
+)
+# Perform ANOVA of libraries
+aov_result <- aov(Values ~ Group, data = data)
+
+# Display the results
+print(aov_result)
+summary(aov_result)
+
+```
+

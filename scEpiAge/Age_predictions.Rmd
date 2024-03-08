@@ -1,0 +1,364 @@
+---
+title: "Ageprediction"
+author: "Kaisu Hiltunen"
+date: "2024-01-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Age prediction
+Age prediction was done with scEpiAge blood clock.
+Used parameters
+tissue="blood"
+nSimulations = 5
+```{r, warning=FALSE, message=FALSE}
+setwd("C:/Users/khiltunen/Documents/R/scEpiAge")
+options(bitmapType='cairo')
+library(ggplot2)
+library(dplyr)
+library(VennDiagram)
+```
+
+
+```{r}
+#colorblind colors '#CC6677', '#332288', '#DDCC77', '#117733', '#88CCEE', '#882255', '#44AA99', '#999933', '#AA4499'. Bad data: '#DDDDDD'
+
+#colors ("#2978a0", "#710C32", "#fc8d62", "#68CBAC")
+tissue = "blood"
+file <- "extended_predS183_blood.txt"
+```
+
+
+```{r functions for age predictions}
+create_predictions_df <- function(file){
+  # Function for reading the age prediction data into a dataframe. 
+  data <- read.delim(file)
+  
+  #extract tissue txpe
+  tissueType <- sub(".*_(\\w+)_r\\d+_.*", "\\1", rownames(data))
+  data$TissueType <-tissueType
+  
+  return(data)
+}
+# Age deviation is actually the same as absolute error
+calculate_avg_errors <- function(data){
+  # Function to calculate average errors by tissue type 
+  avg_error_by_tissue <- data %>%
+    group_by(TissueType) %>%
+    summarize(AvgAbsoluteError = mean(ageDeviation))
+  return(avg_error_by_tissue)
+}
+
+calculate_avg_relative_errors <- function(data){
+  # Function to calculate average relative errors by tissue type 
+  # This function takes into count how large the error is compared to the 
+  # actual age
+  
+  #Calculate relative error
+  data$relativeError <- 
+    ((data$predictedAge - data$actualAge)/data$actualAge)*100
+  
+  avg_r_error_by_tissue <- data %>%
+    group_by(TissueType) %>%
+    summarize(AvgRelativeError = mean(relativeError))
+  
+  return(avg_r_error_by_tissue)
+}
+
+residual_hist <- function(data){
+  #Function to plot the frequency histogram of residuals i.e. the agedeviations 
+  
+}
+
+age_pred_plot <- function(data, clock){
+  # Plot actual age vs. predicted age using ggplot
+  ggplot(data, aes(x = actualAge, y = predictedAge)) +
+    geom_point(aes(color = TissueType, shape = TissueType), 
+               alpha=0.7, size=3) +
+    scale_color_manual(values = c("BAT" = "#710C32", 
+                                  "Blood" = "#2978a0", 
+                                  "Liver" = "#68CBAC", 
+                                  "scAT" = "#fc8d62")) +
+    scale_shape_manual(values = c("BAT" = 19, "Blood" = 17, 
+                                  "Liver" = 15, "scAT" = 8)) +
+    # Add linear trendlines
+    geom_smooth(aes(color=TissueType),
+                method = "lm", se = FALSE, 
+                size = 0.7, linetype="dashed") +  
+    labs(title = paste0("Age prediction (", clock, " clock)"), 
+         x="Chronological age", 
+         y= "Predicted age", 
+         color="Tissue regression") +
+    geom_abline(intercept = 0, slope = 1, linetype = "solid", color = "black")+
+    guides(color = guide_legend(override.aes = list(shape = c(19, 17, 15, 8)),
+                                title = "Tissue sample",
+                                title.position = "top"), shape = FALSE)+
+    theme_minimal()+
+    theme(legend.background = element_rect(fill = "white", colour = "grey", linewidth = 0.5),
+          legend.justification = c(0, 1),  # Justify legend position to the top-right
+          legend.position = c(0, 1),       # Position legend inside the plot at the top-right
+          )
+}
+
+# Function to plot ageDeviation vs. actual age using ggplot
+deviation_plot <- function(data, clock){
+  if (length(unique(data$TissueType)) == 4){
+    shapelist = c(19, 17, 15, 8)
+  }
+  else if (length(unique(data$TissueType)) < 4){
+    shapelist = c(17)
+  }
+  ggplot(data, aes(x = actualAge, y = ageDeviation, 
+                   color = TissueType,shape = TissueType)) +
+    geom_point() +
+    labs(title = paste("Absolute error:",clock,"clock"),
+           x="Chronological age", 
+           y= "Absolute error", 
+           color="Tissue" ) +
+    scale_shape_manual(values = c("BAT" = 19, "Blood" = 17, 
+                                  "Liver" = 15, "scAT" = 8)) +
+    scale_color_manual(values = c("BAT" = "#710C32", 
+                                    "Blood" = "#2978a0", 
+                                    "Liver" = "#68CBAC", 
+                                    "scAT" = "#fc8d62"))+
+      # Add linear trendlines
+    geom_smooth(aes(color=TissueType),
+                  method = "lm", se = FALSE, size = 0.7, linetype="dashed") +
+    guides(shape = FALSE)+
+    guides(color = guide_legend(override.aes = list(shape = shapelist),
+                                       title = "Tissue sample",
+                                       title.position = "top"), 
+                                       shape = FALSE)+
+    theme_minimal()
+}
+
+#Function for getting the rownames to make a Venn diagram of the clock sites
+get_rownames <- function(tissue){
+  if(tissue=="liver"){
+  expectedMethMatrix <- 
+    read.delim("./ExpectedMethylationMatrices/ExpectedMethMat_Liver.tsv",
+               as.is=T,row.names=1,check.names = F)
+  } else if(tissue=="lung"){
+  expectedMethMatrix <- 
+    read.delim("./ExpectedMethylationMatrices/ExpectedMethMat_Lung.tsv",
+               as.is=T,row.names=1,check.names = F)
+ } else if(tissue=="blood"){
+  expectedMethMatrix <- 
+    read.delim("./ExpectedMethylationMatrices/ExpectedMethMat_Blood.tsv",
+               as.is=T,row.names=1,check.names = F)
+ }
+  return(rownames(expectedMethMatrix))
+}
+
+```
+
+
+
+**Visualization:**
+Here linear regression plots are produced to provide visualizations of the relationships between actualAge and predictedAge. 
+
+Make plot to compare frequency of pred age - actal age between tissues.
+```{r blood clock data}
+# Retrieve predictions
+blood_clock_data <- create_predictions_df("extended_predS183_blood.txt")
+# Calculate errors
+errors <- calculate_avg_errors(blood_clock_data)
+relative_errors <- calculate_avg_relative_errors(blood_clock_data)
+
+age_pred_plot(blood_clock_data, "Blood")
+```
+
+
+# Liver clock predictions
+```{r liver clock data}
+# Retrieve predictions
+liver_data <- create_predictions_df("extended_predS183_liver.txt")
+# Calculate errors
+errors <- calculate_avg_errors(liver_data)
+relative_errors <- calculate_avg_relative_errors(liver_data)
+
+age_pred_plot(liver_data, "liver")
+
+
+```
+
+
+```{r lung clock data}
+# Retrieve predictions
+lung_data <- create_predictions_df("extended_predS183_lung.txt")
+# Calculate errors
+errors <- calculate_avg_errors(lung_data)
+relative_errors <- calculate_avg_relative_errors(lung_data)
+
+age_pred_plot(lung_data, "lung")
+```
+
+
+
+
+
+
+```{r ageDeviation blood clock data}
+# Make a subset for blood sample age predictions with blood clock
+subset_blood_data <- blood_clock_data %>%
+  subset(TissueType == "Blood")
+# Plot age deviation for this subset
+deviation_plot(subset_blood_data, "Blood")
+```
+```{r abs error histogram}
+deviation_histogram <- function(data, clock) {
+  ggplot(data, aes(x = predictedAge-actualAge, fill = TissueType)) +
+    geom_histogram(binwidth = 6, position = "dodge", alpha = 0.7) +
+    labs(title = paste("Error histogram:", clock, "clock"),
+         x = "Error",
+         y = "Frequency",
+         fill = "Tissue") +
+    scale_fill_manual(values = c("BAT" = "#710C32",
+                                 "Blood" = "#2978a0",
+                                 "Liver" = "#68CBAC",
+                                 "scAT" = "#fc8d62")) +
+    theme_minimal()
+}
+
+# Example usage:
+deviation_histogram(blood_clock_data, "Blood")
+
+```
+
+```{r ageDeviation lung clock data}
+deviation_plot(blood_clock_data, "Blood")
+```
+
+```{r ageDeviation lung clock data}
+deviation_plot(lung_data, "lung")
+```
+```{r ageDeviation liver clock data}
+deviation_plot(liver_data, "liver")
+```
+#IQR analysis
+
+```{r}
+IQR_ratio_histogram <- function(data, clock) {
+  ggplot(data, aes(x = IQR_Ratio, fill = TissueType)) +
+    geom_histogram(binwidth = 4, position = "dodge", alpha = 0.7) +
+    labs(title = paste("IQR histogram:", clock, "clock"),
+         x = "IQR Ratio",
+         y = "Frequency",
+         fill = "Tissue") +
+    scale_fill_manual(values = c("BAT" = "#710C32",
+                                 "Blood" = "#2978a0",
+                                 "Liver" = "#68CBAC",
+                                 "scAT" = "#fc8d62")) +
+    theme_minimal()
+}
+IQR_ratio_histogram(blood_clock_data, "Blood")
+
+
+```
+
+
+# R-squared analysis
+
+
+```{r}
+# Create a function to calculate R-squared for a specific tissue group
+calculate_r_squared <- function(data) {
+  # Step 1 Calculate the Mean Squared Error (MSE) of your model
+  mse_model <- mean((data$actualAge - data$predictedAge)^2)
+
+  # Step 2 Calculate the MSE of the mean (baseline model)
+  mse_mean <- mean((data$actualAge - mean(data$actualAge))^2)
+
+  # Step 3 Calculate R-squared
+  r_squared <- 1 - (mse_model / mse_mean)
+  
+  return(r_squared)
+}
+
+# Initialize an empty list to store results
+r_squared_results_list <- list()
+
+# Get unique tissue types
+unique_tissues <- unique(blood_clock_data$TissueType)
+
+# Iterate over each tissue group
+for (tissue in unique_tissues) {
+  # Filter data for the current tissue
+  current_data <- dplyr::filter(blood_clock_data, TissueType == tissue)
+  
+  # Calculate R-squared for the current tissue
+  r_squared_value <- calculate_r_squared(current_data)
+  
+  # Store the result in the list
+  r_squared_results_list[[tissue]] <- r_squared_value
+}
+
+# Convert the list to a data frame
+r_squared_results <- data.frame(
+  R_squared = unlist(r_squared_results_list)
+)
+
+# Print the summarized results
+print(r_squared_results)
+
+```
+
+
+
+
+
+
+# Clock sites analysis
+
+```{r Clock sites}
+# compare the number of sites
+# Read data files
+data_blood <- read.delim("extended_predS183_blood.txt")
+data_liver <- read.delim("extended_predS183_liver.txt")
+data_lung <- read.delim("extended_predS183_lung.txt")
+data_lung$clockType <- "Lung"
+data_blood$clockType <- "Blood"
+data_liver$clockType <- "Liver"
+#print(data_lung)
+# Combine the data frames
+data_combined <- rbind(data_blood, data_liver, data_lung)
+# Plot
+
+# Organize clockType in the desired order
+data_combined$clockType <- factor(data_combined$clockType, levels = c("Blood", "Lung", "Liver"))
+
+# Plot a boxplot
+site_plot <- ggplot(data_combined) +
+  geom_boxplot(aes(x = clockType, y = sitesUsed, fill = clockType)) +
+  labs(title = "Number of Sites Used in Predicition", fill="Clock", y="Sites Used by Clock", x="Clock type") +
+  scale_fill_manual(values = c("Blood" = "#2978a0", 
+                                "Liver" = "#68CBAC", 
+                                "Lung" = '#88CCEE'))+
+  theme_minimal()
+  
+site_plot
+```
+```{r clock sites overlap}
+blood_sites <- get_rownames("blood")
+liver_sites <- get_rownames("liver")
+lung_sites <- get_rownames("lung")
+
+# Create a list of sets
+venn_list <- list(
+  "blood" = blood_sites,
+  "liver" = liver_sites,
+  "lung" = lung_sites
+)
+
+# Create the Venn diagram
+venn <- venn.diagram(venn_list,filename = 'Euler_3set_simple.png')
+venn
+?venn.diagram
+# Customize the plot if needed
+grid.draw(venn.plot)
+
+```
+
+
