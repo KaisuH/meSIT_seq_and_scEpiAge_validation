@@ -183,9 +183,8 @@ IQR_ratio_histogram <- function(data, clock) {
 
 
 ## Blood Clock
-Here linear regression plots are produced to provide visualizations of the relationships between actualAge and predictedAge. 
+Here the predictions are plotted and linear regression lines are produced to provide visualizations of the relationships between actualAge and predictedAge. 
 
-Plot to compare frequency of pred age - actal age between tissues with the blood clock:
 ```{r blood clock data}
 # Retrieve predictions
 blood_clock_data <- create_predictions_df("extended_predS183_blood.txt")
@@ -221,6 +220,8 @@ IQR_ratio_histogram(blood_clock_data, "Blood")
 ## Liver clock
 
 ### Predictions
+
+Plots of age predictions made with liver clock. Samples are from the Custom library.
 ```{r liver clock data}
 # Retrieve predictions
 liver_data <- create_predictions_df("extended_predS183_liver.txt")
@@ -229,8 +230,6 @@ errors <- calculate_avg_errors(liver_data)
 relative_errors <- calculate_avg_relative_errors(liver_data)
 
 age_pred_plot(liver_data, "liver")
-
-
 ```
 
 ### Deviations
@@ -242,7 +241,7 @@ deviation_plot(liver_data, "liver")
 ## Lung clock 
 
 ### Predictions
-
+Plots of age predictions made using the lung clock. Samples are from the Custom library.
 ```{r lung clock data}
 # Retrieve predictions
 lung_data <- create_predictions_df("extended_predS183_lung.txt")

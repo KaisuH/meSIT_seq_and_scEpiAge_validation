@@ -11,8 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
-```{r libraries, message=FALSE, warning=FALSE}
-setwd("C:/Users/khiltunen/Documents/R/meSIT_seq_and_scEpiAge_validation/PCA")
+```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
+setwd("~/R/meSIT_seq_and_scEpiAge_validation/PCA")
 
 library(tidyverse) #contains ggplot2 dplyr and tidyR for plotting
 library(stats)
@@ -29,6 +29,8 @@ library(gridExtra) #for arranging the combined plot
 # PCA analysis of Custom library samples
 
 ## Load data from COV-files
+
+The data used in this analysis is from the Custom library samples. The other libraries can be analysed by changing the library in the variable myInputFolder.
 ```{r load data}
 metaDataFile<-"Meta_data_file.xlsx"
 
@@ -38,11 +40,12 @@ msClock <- read.table("msClockSites_mm10.bed", header = FALSE,
 
 # Replace InputFolder with actual data
 # Using the custom enrichment library
-myInputFolder = "../coverage_analysis/COV-files/S183"
+#myInputFolder = "../coverage_analysis/COV-files/S185" #No enrichment
+#myInputFolder = "../coverage_analysis/COV-files/S184" #xGen Nextera
+myInputFolder = "../coverage_analysis/COV-files/S183" #Custom
 ```
 
-## Functions for analysis
-```{r data handling functions, warning=FALSE, message=FALSE}
+```{r data handling functions, echo=FALSE, warning=FALSE, message=FALSE}
 ###################################
 ### Read files into data frame ###
 #loop through all the files in the folder and merge the rows with the 
