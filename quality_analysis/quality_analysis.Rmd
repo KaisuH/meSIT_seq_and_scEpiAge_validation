@@ -329,7 +329,7 @@ plot_summary <- function(data, library){
    
   selected_data <- data %>%
     #select("Category", selected_columns) %>%
-    select("Category",all_of(selected_columns)) %>%  # Updated this line
+    dplyr::select("Category",all_of(selected_columns)) %>%  # Updated this line
     
     # Normalize values by dividing by Total reads before alignment and multiplying by 100
     mutate(across(-Category, ~ as.numeric(.) / as.numeric(data$`Total reads before alignment`) * 100)) %>%
@@ -349,7 +349,7 @@ plot_summary <- function(data, library){
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     labs(title = paste("Processing of", library, "library"), x= "Data processing step",y = "Percentage of reads")+
     geom_text(data = mean_values, aes(x = Variable, y = Mean, label = sprintf("%.2f", Mean)),
-                vjust = 0, color = "black", size = 3, angle = 0, hjust = 3)
+                vjust = -1.5, color = "black", size = 3, angle = 0, hjust = 1)
   
 }
 ```
@@ -540,9 +540,9 @@ combined_align_plot_df$`Library` <- factor(
 plot <- ggplot(combined_align_plot_df, aes(x = `Alignment Category`, 
                               y = Percentage, 
                               fill = `Library`, color=`Library`)) +
-    geom_boxplot(alpha=0.6)  +
+    geom_boxplot(alpha=0.7)  +
     scale_fill_manual(values = c("#2978a0", "#710C32", "#fc8d62"))+
-    scale_color_manual(values = c("#2978a0", "#710C32", "#fc8d62"))+
+    scale_color_manual(values = c("#216080", "#590a27", "#b36446"))+
     labs(title = paste0("Alignment of reads"),
          y = "Percentage of reads") +
     theme_minimal() +
@@ -617,7 +617,7 @@ plot <- ggplot(combined_dupl_plot_df, aes(x = `Library`,
                               fill = `Library`, color=`Library`)) +
     geom_boxplot(alpha=0.6)  +
     scale_fill_manual(values = c("#2978a0", "#710C32", "#fc8d62"))+
-    scale_color_manual(values = c("#2978a0", "#710C32", "#fc8d62"))+
+    scale_color_manual(values = c("#216080", "#590a27", "#b36446"))+
     labs(title = "Duplication of reads",
          x= "Library",
          y = "Percentage of duplicated reads") +
@@ -715,6 +715,8 @@ kable(as.matrix(results_df))
 
 # Lost reads analysis
 
+
+
 ```{r S183 library summary}
 # Read the text files into a data frame
 C_all_read_data <- summarise_library(c(
@@ -737,6 +739,57 @@ N_all_read_data <- summarise_library(c(
 plot_summary(N_all_read_data, "Control")
 ```
 
+```{r new function for summary}
+# First prepare the alignment dfs for a combined boxplot with all of the libs
+C_all_read_data$Library <- "Custom"
+X_all_read_data$Library <- "xGen Nextera"
+N_all_read_data$Library <- "Control"
+
+# Create the combined df
+combined_df <- rbind(C_df,X_df,N_df)
+
+# Reorder the levels of the Alignment Category factor
+combined_df$`Library` <- factor(
+  combined_df$`Library`, 
+  levels = c("Custom", 
+             "xGen Nextera", 
+             "Control")) 
+
+selected_columns <- c("Aligned Uniquely", "Aligned Ambiguously", "Total reads before deduplication", "Deduplicated reads (remaining)", "Library")
+
+data <- combined_df %>%
+  dplyr::select("Category", all_of(selected_columns)) %>%
+  mutate(across(-c(Category, Library), ~ as.numeric(.) / as.numeric(combined_df$`Total reads before alignment`) * 100)) %>%
+  tidyr::gather(key = "Variable", value = "Value", -c(Category, Library)) %>%
+  mutate(Variable = factor(Variable, levels = selected_columns)) # Set factor levels
+
+plot_summary_combined <- function(data) {
+  # Make boxplot
+  ggplot(data, aes(x = `Variable`, 
+                              y = `Value`, 
+                              fill = `Library`, color=`Library`)) +
+    geom_boxplot(alpha=0.7) +
+    scale_fill_manual(values = c("#2978a0", "#710C32", "#fc8d62")) +
+    scale_color_manual(values = c("#216080", "#590a27", "#b36446")) +
+    labs(title = paste0("Processing of all libraries"),
+         y = "Percentage of reads") +
+    theme_minimal() +
+    guides(fill = guide_legend(nrow = 3)) +
+    theme(legend.background = element_rect(fill = "white", 
+                                           colour = "grey", 
+                                           linewidth = 0.5),
+          legend.justification = c(0, 0), # legend position to the top-right
+          legend.position = c(0.0, 0.0),      # Position legend inside the plot
+          axis.title.x = element_blank(), # Remove x-axis title
+          panel.grid.minor.x = element_blank(), # Remove minor vgridlines
+          axis.text.x = element_text(angle = 45, hjust = 1)) 
+    #geom_text(data = mean_values, aes(x = Variable, y = Mean, label = sprintf("%.2f", Mean)),
+    #          vjust = -1.5, color = "black", size = 3, angle = 0, hjust = 1)
+}
+
+
+plot_summary_combined(data)
+```
 # Software versions
 Bowtie2
 Software	Version
