@@ -179,7 +179,41 @@ IQR_ratio_histogram <- function(data, clock) {
                                  "scAT" = "#fc8d62")) +
     theme_minimal()
 }
+
+# plot for comparing replicates
+replicate_boxplot <- function(data){
+  
+  # Extracting sample name
+  pattern <- "MethRate_(\\d+_\\w+)_r\\d+.*"
+  sampleName <- sub(pattern, "\\1", rownames(data))
+  
+  # Add the sample name to the data frame
+  data$sampleName <- sampleName
+  
+  data <- data %>% 
+    arrange(actualAge) 
+  
+  # Calculate the number of replicates for each sample
+  replicate_counts <- data %>% 
+    group_by(sampleName) %>% 
+    summarize(n = n())
+  #print(replicate_counts) # uncomment if you want to see the numbers
+  
+  unique_samples <- data %>%
+    distinct(sampleName, actualAge)
+  
+  ggplot(data, aes(x = sampleName, y = predictedAge)) +
+    geom_boxplot() +
+    geom_text(data = unique_samples, aes(label = "*", x = sampleName, y = actualAge)
+              , color="#2978a0", size=6) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+    labs(title = "Predicted age of technical replicates",
+         x = "Sample name",
+         y = "Predicted age")
+}
 ```
+
 
 
 ## Blood Clock
@@ -201,6 +235,20 @@ subset_blood_data <- blood_clock_data %>%
 # Plot age deviation for this subset
 deviation_plot(subset_blood_data, "Blood")
 ```
+
+## Comparing the age predicitions of technical replicates
+
+Comparing the replicates of all the tissue samples in custom library with blood clock. 
+```{r plot or comparing blood clock samples}
+replicate_boxplot(blood_clock_data)
+```
+
+Only blood sample coparison. Blood samples had all three replicates.
+
+```{r plot or comparing blood replicates}
+replicate_boxplot(subset_blood_data)
+```
+
 
 ```{r abs error histogram blood}
 # Example usage:

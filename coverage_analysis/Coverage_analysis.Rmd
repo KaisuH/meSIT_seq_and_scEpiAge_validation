@@ -22,7 +22,7 @@ library(tibble)# For manipulating data
 library(tools) # For handling strings
 library(ggridges)#used for ridge density plotting which was not used in the end
 library(car)#variance analysis
-library(scales)#plotting axis
+library(scales)#plotting axis without powers
 library(gridExtra)#plotting multiple plots at once
 library(ggpubr)#Adding shared text to muliple plots
 library(ggpattern)#add patterns to histogram
@@ -30,7 +30,7 @@ library(grid)
 library(tidyr)
 library(beanplot) #for plotting the coverage
 library(forcats) #for ordering the coverage plot
-setwd("C:/Users/khiltunen/Documents/R/coverage_analysis")
+setwd("~/R/meSIT_seq_and_scEpiAge_validation/coverage_analysis")
 ```
 
 
@@ -80,7 +80,7 @@ get_library <- function(df){
   return(reslist)
 }
 
-bar_plot <- function(data, library){
+bar_plot <- function(data, library, log = TRUE){
   # Function to create a bar plot for one library demultiplexing statistics
   plot<- ggplot(data, aes(x = category, y = log(value), fill = category)) +
       geom_bar(stat = "identity", color = "black") +
@@ -90,7 +90,7 @@ bar_plot <- function(data, library){
       labs(title = paste0(library, " library"), 
            fill = "Sample type", 
            y = "Logarithm of number of reads")+
-      ylim(0,18)+
+      ylim(0,max(log(data$value))+1)+
       theme(
         legend.position = "none",
         plot.title = element_text(size = 11),
@@ -98,6 +98,8 @@ bar_plot <- function(data, library){
         axis.text.x = element_text(size = 8,angle = 90, vjust = 0.5, hjust=1))
   return(plot)
 }
+
+barplot_lambda <- function(){}
 ```
 
 ```{r coverage functions}
@@ -166,7 +168,7 @@ The amount of unmatched reads are approximately the same in all libraries.
 # Construct the tables for demultiplexing statistics of custom (C), xgen (X),
 # and no enrichment (N) libraries
 # Define the file location for demultiplexing statistics
-demux_file <- "~/R/coverage_analysis/demultiplexing_statistics.txt"
+demux_file <- "demultiplexing_statistics.txt"
 # Read the file to a table
 demux_df <- read.table(demux_file, header = TRUE, sep = "\t")
 libs <- get_library(demux_df)
@@ -183,11 +185,9 @@ X_data <- get_sums(libs$X_df)
 # Samples. 
 
 # Create three plots using the modified function
-
 plot1 <- bar_plot(C_data, "Custom")
 plot2 <- bar_plot(X_data, "xGen Nextera")
 plot3 <- bar_plot(N_data, "Non-enriched")
-
 #get_legend function from http://stackoverflow.com/questions/12539348/ggplot-separate-legend-and-plot
 get_legend<-function(myggplot){
   tmp <- ggplot_gtable(ggplot_build(myggplot))
@@ -207,6 +207,57 @@ combined_plot <- grid.arrange(
   top = textGrob("Distribution of reads in all libraries",
                  gp=gpar(fontsize=14,font=1)))
 
+```
+## Comparing lambda between libraries
+
+Plot of just lambda, non-scaled, in all three libraries.
+```{r plot demultiplexed lambda of all libraries}
+
+# Extract Lambda rows and add a library column
+lambda_df1 <- C_data %>% filter(category == "Lambda") %>% mutate(library = "Custom")
+lambda_df2 <- X_data %>% filter(category == "Lambda") %>% mutate(library = "xGen Nextera")
+lambda_df3 <- N_data %>% filter(category == "Lambda") %>% mutate(library = "Control")
+
+# Combine into one dataframe
+combined_lambda_df <- rbind(lambda_df1, lambda_df2, lambda_df3)
+# Reorder the levels of the Alignment Category factor
+combined_lambda_df$`library` <- factor(
+  combined_lambda_df$`library`, 
+  levels = c("Custom", 
+             "xGen Nextera", 
+             "Control")) 
+
+# Plot in sum of reads
+lambda_enrichment_plot_per <- ggplot(combined_lambda_df, aes(x = library, y = value, fill = library)) +
+    geom_bar(stat = "identity", position = position_dodge()) +
+    labs(title = "Lambda Reads",
+         x = "Library",
+         y = "Value") +
+    scale_y_continuous(labels = label_number()) +
+    theme_minimal()+
+    theme(
+        legend.position = "none",
+        plot.title = element_text(size = 11),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 8,angle = 90, vjust = 0.5, hjust=1))
+
+# Plot in percentage
+lambda_enrichment_plot <- ggplot(combined_lambda_df, aes(x = library, y = as.numeric(gsub("%", "", percentage)), fill = library)) +
+    geom_bar(stat = "identity", position = position_dodge()) +
+    labs(title = "Lambda Reads",
+         x = "Library",
+         y = "Percentage") +
+    scale_fill_manual(values = c(
+        "#8da0cb","#a13d63","#fc8d62"))+
+    theme_minimal()+
+    #ylim(0,max(combined_lambda_df$percentage)) +
+    theme(
+        legend.position = "none",
+        plot.title = element_text(size = 11),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 8,angle = 90, vjust = 0.5, hjust=1))
+
+lambda_enrichment_plot
 ```
 
 
