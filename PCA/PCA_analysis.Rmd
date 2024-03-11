@@ -169,7 +169,7 @@ plot1 <- function(pc_scores_list){
   
   ggplot() +
     geom_point(data=pc_scores, size = 3, aes(x = PC1, y = PC2, color = Age, shape = TissueType)) +
-    labs(title = paste("PCA of methylation-% with",n_sites, "sites"),x = "Principal Component 1", y = "Principal Component 2",
+    labs(title = paste("PCA of methylation-% of",n_sites, "sites"),x = "Principal Component 1", y = "Principal Component 2",
          color = "Age", shape = "Tissue Type") +
     scale_color_gradient(low = "#000000", high = "#2978a0") +  
     scale_shape_manual(values = c("BAT" = 19, "Blood" = 17, "Liver" = 15, "scAT" = 8)) +

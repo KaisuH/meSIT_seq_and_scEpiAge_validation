@@ -302,14 +302,20 @@ The mean probe reads are normalised by dividing with library specific total read
 library_read_depth<-read.table("covfiles_probe_report_corrected_tot_read_count_per_million.txt", header = TRUE, sep = "\t",stringsAsFactors=FALSE, quote="", check.names = FALSE)
 
 # Simplify library and column names
-colnames(library_read_depth) <- gsub("_", " ", gsub("Mean ", "", colnames(library_read_depth)))
+colnames(library_read_depth) <- gsub("_", " ", 
+                                     gsub("Mean ", "", 
+                                          colnames(library_read_depth)))
 
 # Extract only necessary columns
 library_read_depth<-library_read_depth[,c(7,9,11)]
 
+# Rename columns for uniformity
+colnames(library_read_depth) <- c("Custom", "xGen Nextera", "Control")
+
 plot_data<-library_read_depth%>%
   stack()%>%
-  mutate(ind = fct_reorder(ind, values, .fun='median'))
+  rename(values = values, library = ind) %>%
+  mutate(library = fct_reorder(library, values, .fun = 'median'))
 
  
 average_site_read_depth=colMeans(library_read_depth)
@@ -319,20 +325,21 @@ print(average_site_read_depth)
 
 ```{r}
 
-# Convert ind to factor with custom order
-plot_data$ind <- factor(plot_data$ind, levels = c("Custom library", "xGen Nextera library", "Noenrichment library"))
+# Convert library to factor with custom order
+plot_data$library <- factor(plot_data$library, 
+                            levels = c("Custom", "xGen Nextera", "Control"))
 
 # Create the violin plot
 violin_plot<-ggplot(plot_data, 
-                    aes(x = ind, y = values, fill = ind)) +
+                    aes(x = library, y = values, fill = library)) +
   geom_violin(trim = TRUE, 
               scale = "width",
               draw_quantiles = c(0.25, 0.5, 0.75), 
               # Use a smaller bandwidth for closer density fit
               adjust=0.5) +
-  scale_fill_manual(values = c("Custom library" = "#8da0cb", 
-                               "xGen Nextera library" = "#a13d63", 
-                               "Noenrichment library" = "#fc8d62")) +
+  scale_fill_manual(values = c("Custom" = "#8da0cb", 
+                               "xGen Nextera" = "#a13d63", 
+                               "Control" = "#fc8d62")) +
   labs(x = "Library", 
        y = "Per million reads coverage depth", 
        title = "Violin plot of site read depth") +
@@ -377,7 +384,6 @@ binwidth <- 0.5  # Adjust this value as needed
 seq(min(depth_C), max(depth_C), by = binwidth)
 hist(depth_C,breaks=40,xlim = range_both)
 hist(depth_X,breaks=40,xlim = range_both, add=TRUE)
-
 ```
 
 
