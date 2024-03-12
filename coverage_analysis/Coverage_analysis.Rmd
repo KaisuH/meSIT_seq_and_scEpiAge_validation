@@ -314,9 +314,9 @@ colnames(library_read_depth) <- c("Custom", "xGen Nextera", "Control")
 
 plot_data<-library_read_depth%>%
   stack()%>%
-  rename(values = values, library = ind) %>%
-  mutate(library = fct_reorder(library, values, .fun = 'median'))
+  mutate(ind = fct_reorder(ind, values, .fun = 'median'))
 
+colnames(plot_data) <- c("Values","Library")
  
 average_site_read_depth=colMeans(library_read_depth)
   # Print column means
@@ -326,12 +326,12 @@ print(average_site_read_depth)
 ```{r}
 
 # Convert library to factor with custom order
-plot_data$library <- factor(plot_data$library, 
+plot_data$Library <- factor(plot_data$Library, 
                             levels = c("Custom", "xGen Nextera", "Control"))
 
 # Create the violin plot
 violin_plot<-ggplot(plot_data, 
-                    aes(x = library, y = values, fill = library)) +
+                    aes(x = Library, y = Values, fill = Library)) +
   geom_violin(trim = TRUE, 
               scale = "width",
               draw_quantiles = c(0.25, 0.5, 0.75), 
@@ -341,8 +341,8 @@ violin_plot<-ggplot(plot_data,
                                "xGen Nextera" = "#a13d63", 
                                "Control" = "#fc8d62")) +
   labs(x = "Library", 
-       y = "Per million reads coverage depth", 
-       title = "Violin plot of site read depth") +
+       y = "Read depth\n(Per million reads)", 
+       title = "Clock site read depth") +
   theme_minimal() +
   theme(legend.position = "none")
 violin_plot
