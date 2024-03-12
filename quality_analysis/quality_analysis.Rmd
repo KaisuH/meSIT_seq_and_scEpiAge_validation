@@ -807,7 +807,7 @@ plot_summary_combined <- function(data) {
           panel.grid.minor.x = element_blank(), # Remove minor vgridlines
           axis.text.x = element_text(angle = 0, hjust = 0.5)) +
     geom_text(data = mean_values_C, aes(x = Variable, y = Mean, group=Library, label = sprintf("%.1f", Mean)),
-                vjust = -4.3, color = "black", size = 2.6, angle = 90, hjust = -0.6)+
+                vjust = -5, color = "black", size = 2.6, angle = 90, hjust = -0.6)+
     
     geom_text(data = mean_values_X, aes(x = Variable, y = Mean, group=Library, label = sprintf("%.1f", Mean)),
                 vjust = -0.65, color = "black", size = 2.6, angle = 90, hjust = -0.6,check_overlap = TRUE)+
