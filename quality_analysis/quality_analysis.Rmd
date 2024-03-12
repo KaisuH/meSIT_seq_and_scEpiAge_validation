@@ -746,7 +746,7 @@ X_all_read_data$Library <- "xGen Nextera"
 N_all_read_data$Library <- "Control"
 
 # Create the combined df
-combined_df <- rbind(C_df,X_df,N_df)
+combined_df <- rbind(C_all_read_data,X_all_read_data,N_all_read_data)
 
 # Reorder the levels of the Alignment Category factor
 combined_df$`Library` <- factor(
