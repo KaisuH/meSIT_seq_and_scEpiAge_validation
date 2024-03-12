@@ -181,7 +181,7 @@ IQR_ratio_histogram <- function(data, clock) {
 }
 
 # plot for comparing replicates
-replicate_boxplot <- function(data){
+replicate_boxplot <- function(data,point_size,point_shape){
   
   # Extracting sample name
   pattern <- "MethRate_(\\d+_\\w+)_r\\d+.*"
@@ -203,9 +203,9 @@ replicate_boxplot <- function(data){
     distinct(sampleName, actualAge)
   
   ggplot(data, aes(x = sampleName, y = predictedAge)) +
-    geom_boxplot() +
-    geom_text(data = unique_samples, aes(label = "*", x = sampleName, y = actualAge)
-              , color="#2978a0", size=6) +
+    geom_boxplot(size=0.4) +
+    geom_point(data = unique_samples, aes(x = sampleName, y = actualAge)
+              , color="#2978a0", size=point_size, shape = point_shape) +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
     labs(title = "Predicted age of technical replicates",
@@ -240,13 +240,13 @@ deviation_plot(subset_blood_data, "Blood")
 
 Comparing the replicates of all the tissue samples in custom library with blood clock. 
 ```{r plot or comparing blood clock samples}
-replicate_boxplot(blood_clock_data)
+replicate_boxplot(blood_clock_data,2,20)
 ```
 
-Only blood sample coparison. Blood samples had all three replicates.
+Only blood sample comparison. All blood samples had three replicates.
 
 ```{r plot or comparing blood replicates}
-replicate_boxplot(subset_blood_data)
+replicate_boxplot(subset_blood_data,2,17)
 ```
 
 
