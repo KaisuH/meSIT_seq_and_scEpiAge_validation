@@ -790,7 +790,9 @@ plot_summary_combined <- function(data) {
 
 plot_summary_combined(data)
 ```
+
 # Software versions
+
 Bowtie2
 Software	Version
 Bismark	0.24.2
