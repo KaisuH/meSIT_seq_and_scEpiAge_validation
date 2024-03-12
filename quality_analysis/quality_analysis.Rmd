@@ -755,7 +755,15 @@ combined_df$`Library` <- factor(
              "xGen Nextera", 
              "Control")) 
 
-selected_columns <- c("Aligned Uniquely", "Aligned Ambiguously", "Total reads before deduplication", "Deduplicated reads (remaining)", "Library")
+
+
+colnames(combined_df)[colnames(combined_df) == 'Total reads before deduplication'] <- 'Before\ndeduplication'
+colnames(combined_df)[colnames(combined_df) == 'Deduplicated reads (remaining)'] <- 'Deduplicated\n(remaining reads)'
+colnames(combined_df)[colnames(combined_df) == 'Aligned Ambiguously'] <- 'Aligned\nambiguously'
+colnames(combined_df)[colnames(combined_df) == 'Aligned Uniquely'] <- 'Aligned\nuniquely'
+colnames(combined_df)[colnames(combined_df) == 'Did Not Align'] <- 'Did not align'
+
+selected_columns <- c("Aligned\nuniquely", "Did not align", "Aligned\nambiguously", "Before\ndeduplication", "Deduplicated\n(remaining reads)", "Library")
 
 data <- combined_df %>%
   dplyr::select("Category", all_of(selected_columns)) %>%
@@ -763,28 +771,48 @@ data <- combined_df %>%
   tidyr::gather(key = "Variable", value = "Value", -c(Category, Library)) %>%
   mutate(Variable = factor(Variable, levels = selected_columns)) # Set factor levels
 
+# Calculate mean values
+mean_values <- data %>%
+    group_by(Library, Variable) %>%
+    summarise(Mean = mean(Value))
+# Calculate mean values
+mean_values_C <- data %>%
+    filter(Library=="Custom") 
+
+mean_values_X<- mean_values %>%
+    filter(Library=="xGen Nextera") 
+
+mean_values_N<- mean_values %>%
+    filter(Library=="Control") 
+
 plot_summary_combined <- function(data) {
   # Make boxplot
   ggplot(data, aes(x = `Variable`, 
                               y = `Value`, 
-                              fill = `Library`, color=`Library`)) +
-    geom_boxplot(alpha=0.7) +
+                              fill = `Library`, color=`Library`,size=0.5)) +
+    geom_boxplot(alpha=0.7, size=0.5) +
+    ylim(0,83)+
     scale_fill_manual(values = c("#2978a0", "#710C32", "#fc8d62")) +
     scale_color_manual(values = c("#216080", "#590a27", "#b36446")) +
-    labs(title = paste0("Processing of all libraries"),
+    labs(title = paste0("Alignment, filtering and deduplication of libraries"),
          y = "Percentage of reads") +
     theme_minimal() +
     guides(fill = guide_legend(nrow = 3)) +
     theme(legend.background = element_rect(fill = "white", 
                                            colour = "grey", 
                                            linewidth = 0.5),
-          legend.justification = c(0, 0), # legend position to the top-right
-          legend.position = c(0.0, 0.0),      # Position legend inside the plot
+          legend.justification = c(-0.1, 0), # legend position to the top-right
+          legend.position = c(0.0, 0.15),      # Position legend inside the plot
           axis.title.x = element_blank(), # Remove x-axis title
           panel.grid.minor.x = element_blank(), # Remove minor vgridlines
-          axis.text.x = element_text(angle = 45, hjust = 1)) 
-    #geom_text(data = mean_values, aes(x = Variable, y = Mean, label = sprintf("%.2f", Mean)),
-    #          vjust = -1.5, color = "black", size = 3, angle = 0, hjust = 1)
+          axis.text.x = element_text(angle = 0, hjust = 0.5)) +
+    geom_text(data = mean_values_C, aes(x = Variable, y = Mean, group=Library, label = sprintf("%.1f", Mean)),
+                vjust = -4.3, color = "black", size = 2.6, angle = 90, hjust = -0.6)+
+    
+    geom_text(data = mean_values_X, aes(x = Variable, y = Mean, group=Library, label = sprintf("%.1f", Mean)),
+                vjust = -0.65, color = "black", size = 2.6, angle = 90, hjust = -0.6,check_overlap = TRUE)+
+    geom_text(data = mean_values_N, aes(x = Variable, y = Mean, group=Library, label = sprintf("%.1f", Mean)),
+                vjust = 3, color = "black", size = 2.6, angle = 90, hjust = -0.6)
 }
 
 
