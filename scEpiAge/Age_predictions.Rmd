@@ -182,7 +182,7 @@ IQR_ratio_histogram <- function(data, clock) {
 }
 
 # plot for comparing replicates
-replicate_boxplot <- function(data,point_size,point_shape){
+replicate_boxplot <- function(data,point_size=2,point_shape=19,point_color="black"){
   
   # Extracting sample name
   pattern <- "MethRate_(\\d+_\\w+)_r\\d+.*"
@@ -206,7 +206,7 @@ replicate_boxplot <- function(data,point_size,point_shape){
   ggplot(data, aes(x = sampleName, y = predictedAge)) +
     geom_boxplot(size=0.4) +
     geom_point(data = unique_samples, aes(x = sampleName, y = actualAge)
-              , color="#2978a0", size=point_size, shape = point_shape) +
+              , color=point_color, size=point_size, shape = point_shape) +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
     labs(title = "Predicted age of technical replicates",
@@ -247,10 +247,41 @@ replicate_boxplot(blood_clock_data,2,20)
 Only blood sample comparison. All blood samples had three replicates.
 
 ```{r plot or comparing blood replicates}
-replicate_boxplot(subset_blood_data,2,17)
+replicate_boxplot(subset_blood_data, 
+                  point_size=2, 
+                  point_shape=17, 
+                  point_color="#2978a0")
 ```
-
-
+```{r plot or comparing Liver replicates}
+# Make a subset for liver sample age predictions with blood clock 
+subset_liver_data <- blood_clock_data %>%
+  subset(TissueType == "Liver")
+# Plot age deviation for this subset
+replicate_boxplot(subset_liver_data,
+                  point_size=2,
+                  point_shape=15,
+                  point_color="#68CBAC")
+```
+```{r plot or comparing scAT replicates}
+# Make a subset for scAT sample age predictions with blood clock 
+subset_scAT_data <- blood_clock_data %>%
+  subset(TissueType == "scAT")
+# Plot age deviation for this subset
+replicate_boxplot(subset_scAT_data,
+                  point_size=2,
+                  point_shape=8,
+                  point_color="#fc8d62")
+```
+```{r plot or comparing BAT replicates}
+# Make a subset for BAT sample age predictions with blood clock
+subset_BAT_data <- blood_clock_data %>%
+  subset(TissueType == "BAT")
+# Plot age deviation for this subset
+replicate_boxplot(subset_BAT_data,
+                  point_size=2,
+                  point_shape=19,
+                  point_color="#710C32")
+```
 ```{r abs error histogram blood}
 # Example usage:
 deviation_histogram(blood_clock_data, "Blood")
@@ -377,15 +408,6 @@ print(r_squared_results_df)
 
 
 
-```{r}
-
-```
-
-
-
-
-
-
 # Clock sites analysis
 
 ```{r Clock sites function, echo=FALSE, warning=FALSE, message=FALSE}
@@ -460,17 +482,5 @@ display_venn(
 
 ```
 
-<img src="Venn_diagram_of_clock_sites.jpg" width="400" height="400">
-```{r}
-if (!require(devtools)) install.packages("devtools")
-devtools::install_github("yanlinlin82/ggvenn")
 
-
-library(ggvenn)
-ggvenn(
-  venn_list, 
-  fill_color = c("#0073C2FF", "#EFC000FF", "#CD534CFF"),
-  stroke_size = 0.5, set_name_size = 4
-  )
-```
 
