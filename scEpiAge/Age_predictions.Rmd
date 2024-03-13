@@ -72,17 +72,18 @@ residual_hist <- function(data){
   
 }
 
-age_pred_plot <- function(data, clock){
+age_pred_plot <- function(data, clock, point_size=3){
   # Plot actual age vs. predicted age using ggplot
   ggplot(data, aes(x = actualAge, y = predictedAge)) +
     geom_point(aes(color = TissueType, shape = TissueType), 
-               alpha=0.7, size=3) +
+               alpha=0.7, size=point_size) +
     scale_color_manual(values = c("BAT" = "#710C32", 
                                   "Blood" = "#2978a0", 
                                   "Liver" = "#68CBAC", 
                                   "scAT" = "#fc8d62")) +
     scale_shape_manual(values = c("BAT" = 19, "Blood" = 17, 
                                   "Liver" = 15, "scAT" = 8)) +
+    ylim(0,135) +
     # Add linear trendlines
     geom_smooth(aes(color=TissueType),
                 method = "lm", se = FALSE, 
@@ -277,7 +278,7 @@ liver_data <- create_predictions_df("extended_predS183_liver.txt")
 errors <- calculate_avg_errors(liver_data)
 relative_errors <- calculate_avg_relative_errors(liver_data)
 
-age_pred_plot(liver_data, "liver")
+age_pred_plot(liver_data, "liver", point_size = 2)
 ```
 
 ### Deviations
@@ -297,7 +298,7 @@ lung_data <- create_predictions_df("extended_predS183_lung.txt")
 errors <- calculate_avg_errors(lung_data)
 relative_errors <- calculate_avg_relative_errors(lung_data)
 
-age_pred_plot(lung_data, "lung")
+age_pred_plot(lung_data, "lung",point_size=2)
 ```
 
 ### Deviations
@@ -406,11 +407,11 @@ data_combined$clockType <- factor(data_combined$clockType, levels = c("Blood", "
 
 # Plot a boxplot
 site_plot <- ggplot(data_combined) +
-  geom_boxplot(aes(x = clockType, y = sitesUsed, fill = clockType)) +
-  labs(title = "Number of Sites Used in Predicition", fill="Clock", y="Sites Used by Clock", x="Clock type") +
+  geom_boxplot(aes(x = clockType, y = sitesUsed, fill = clockType),size=0.3,outlier.size = 0.75) +
+  labs(title = "Number of sites used in predicition", fill="Clock", y="Sites used by clock", x="Clock type") +
   scale_fill_manual(values = c("Blood" = "#2978a0", 
                                 "Liver" = "#68CBAC", 
-                                "Lung" = '#88CCEE'))+
+                                "Lung" = "#E69F00"))+
   theme_minimal()
 ```
 
@@ -430,9 +431,46 @@ venn_list <- list(
   "lung" = lung_sites
 )
 
+# Helper function to display Venn diagram
+display_venn <- function(x, ...){
+  library(VennDiagram)
+  grid.newpage()
+  venn_object <- venn.diagram(x, filename = NULL, ...)
+  grid.draw(venn_object)
+}
+
+display_venn(
+        venn_list,
+        category.names = c("Blood clock" , "Liver clock" , "Lung clock"),
+        # Circles
+        lwd = c(length(blood_sites)/length(lung_sites), length(liver_sites)/length(lung_sites), length(lung_sites)/length(lung_sites))/5,
+        lty = 'blank',
+        fill = c("#2978a0", "#68CBAC", "#E69F00"),
+        # Numbers
+        cex = .9,
+        fontface = "italic",
+        # Set names
+        cat.cex = 1,
+        #cat.fontface = "bold",
+        cat.default.pos = "outer",
+        cat.dist = c(0.065, 0.065, 0.055)
+)
 # Create the Venn diagram
 #venn <- venn.diagram(venn_list,filename = "Venn_diagram_of_clock_sites.png")
 
 ```
 
 <img src="Venn_diagram_of_clock_sites.jpg" width="400" height="400">
+```{r}
+if (!require(devtools)) install.packages("devtools")
+devtools::install_github("yanlinlin82/ggvenn")
+
+
+library(ggvenn)
+ggvenn(
+  venn_list, 
+  fill_color = c("#0073C2FF", "#EFC000FF", "#CD534CFF"),
+  stroke_size = 0.5, set_name_size = 4
+  )
+```
+
