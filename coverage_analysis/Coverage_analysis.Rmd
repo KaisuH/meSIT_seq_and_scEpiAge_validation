@@ -260,6 +260,56 @@ lambda_enrichment_plot <- ggplot(combined_lambda_df, aes(x = library, y = as.num
 lambda_enrichment_plot
 ```
 
+## Read enrichment non logarithmisc scale
+
+```{r}
+#"#2978a0", "#68CBAC", "#710C32", "#fc8d62", "#F768A1", "#FDBF6F", 
+#'#88CCEE', "black", "#E41A1C", "#FF7F00","#4DAF4A", "#FFC425",
+# "#5E3C99", "#1F78B4", "grey",'#CC6677', '#332288'
+
+library(ggplot2)
+library(dplyr)
+
+# Add a library column to each dataframe
+C_data$library <- "Custom"
+X_data$library <- "xGen\nNextera"
+N_data$library <- "Control"
+
+# Combine into one dataframe
+combined_df <- rbind(C_data, X_data, N_data)
+
+# Ensure 'library' is a factor with levels in the order you want
+combined_df$library <- factor(
+  combined_df$library, 
+  levels = c("Custom", "xGen\nNextera", "Control")
+) 
+
+# Ensure 'category' is a factor if not already
+combined_df$category <- as.factor(combined_df$category)
+
+# Custom colors
+custom_colors <- c("#fc8d62", "#68CBAC", "#E41A1C","#4d4d4dff")
+
+# Plot the stacked bar plot
+read_type_plot <- ggplot(combined_df, aes(x = library, y = value, fill = category)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = custom_colors) +
+  labs(title = "Read type distribution per library",
+       #x = "Library",
+       y = "Reads",
+       fill = "Category"
+       ) +
+  scale_y_continuous(labels = scales::label_number()) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(angle = 0, hjust = 0.5)
+  )
+
+read_type_plot
+
+```
+
 
 
 ## Demultiplexing efficiency
@@ -332,7 +382,8 @@ plot_data$Library <- factor(plot_data$Library,
 # Create the violin plot
 violin_plot<-ggplot(plot_data, 
                     aes(x = Library, y = Values, fill = Library)) +
-  geom_violin(trim = TRUE, 
+  geom_violin(trim = TRUE,
+              linewidth = 0.25,
               scale = "width",
               draw_quantiles = c(0.25, 0.5, 0.75), 
               # Use a smaller bandwidth for closer density fit
