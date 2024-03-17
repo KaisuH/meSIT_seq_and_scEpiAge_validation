@@ -291,6 +291,90 @@ deviation_histogram(blood_clock_data, "Blood")
 deviation_plot(blood_clock_data, "Blood")
 ```
 
+## Mean and median average error
+```{r}
+# Calculate mean and median error by tissue type and create df
+results <- aggregate(blood_clock_data$ageDeviation/7, 
+                     by=list(blood_clock_data$TissueType), 
+                     FUN=mean)
+colnames(results) <- c("Tissue type", "Mean age deviation\n(weeks)")
+medians <- aggregate(blood_clock_data$ageDeviation/7, 
+                     by=list(blood_clock_data$TissueType), 
+                     FUN=median)
+results$"Median age deviation\n(weeks)"<-medians$x
+
+# Mean and median error of whole dataset
+results_all<-c("All",mean(blood_clock_data$ageDeviation)/7,
+           median(blood_clock_data$ageDeviation)/7)
+results<-rbind(results, results_all)
+
+        
+print(results)
+```
+
+## Spearman and pearson correlation
+
+
+```{r}
+# Calculate Pearson and Spearman correlations for each TissueType
+pearson_correlations <- sapply(unique(blood_clock_data$TissueType), function(t) {
+    cor(blood_clock_data$predictedAge[blood_clock_data$TissueType == t], 
+        blood_clock_data$actualAge[blood_clock_data$TissueType == t], 
+        method = "pearson")
+})
+
+spearman_correlations <- sapply(unique(blood_clock_data$TissueType), function(t) {
+    cor(blood_clock_data$predictedAge[blood_clock_data$TissueType == t], 
+        blood_clock_data$actualAge[blood_clock_data$TissueType == t], 
+        method = "spearman")
+})
+
+# Add correlations to results data frame
+results$"Pearson correlation" <- pearson_correlations
+results$"Spearman correlation" <- spearman_correlations
+
+# Display the results
+print(results)
+
+```
+
+```{r}
+# Perform the Shapiro-Wilk test
+shapiro_test <- shapiro.test(blood_clock_data$predictedAge)
+
+# Print the results of the test
+print(shapiro_test)
+
+# Assess if the data is normally distributed
+if(shapiro_test$p.value > 0.05) {
+  print("Data is normally distributed")
+} else {
+  print("Data is not normally distributed")
+}
+```
+```{r}
+# Get unique tissue types
+tissue_types <- unique(blood_clock_data$TissueType)
+
+# Initialize a list to store results
+shapiro_results <- list()
+
+# Loop through each tissue type
+for(tissue in tissue_types) {
+  # Subset data for the tissue type
+  subset_data <- blood_clock_data[blood_clock_data$TissueType == tissue,]
+  
+  # Perform the Shapiro-Wilk test on age_prediction for this subset
+  shapiro_test <- shapiro.test(subset_data$predictedAge)
+  
+  # Store the results
+  shapiro_results[[tissue]] <- shapiro_test
+}
+
+# Print the results for each tissue type
+shapiro_results
+```
+
 ### IQR analysis
 
 ```{r}
