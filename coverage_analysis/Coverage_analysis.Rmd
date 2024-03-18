@@ -417,7 +417,7 @@ print(shapiro_C)
 ```
 With this small p-values we can reject the null hypothesis that the distributions are normally distributed. Therefore a non-parametric test, Wilcoxon sum, will be used. 
 ```{r wilcoxon sum test}
-wilcox_results <- wilcox.test(depth_C, depth_X, paired = FALSE, alternative="greater", exact=FALSE, conf.int = TRUE)
+wilcox_results <- wilcox.test(depth_C, depth_X, paired = TRUE, alternative="greater", exact=FALSE, conf.int = TRUE)
 wilcox_results
 
 # Since the wilcox sum coefficient considers the rank of values, the correlation test ignores the same ranks to find the p-values. Setting exact = FALSE will avoid this issue
@@ -426,16 +426,35 @@ p<-wilcox_results$p.value
 p
 p_adjusted<-p.adjust(p, method = "bonferroni", n = length(depth_X))
 p_adjusted
-
 # Set up a side-by-side layout
 par(mfrow = c(1, 2))
-
-# Specify the bin width
-binwidth <- 0.5  # Adjust this value as needed
-seq(min(depth_C), max(depth_C), by = binwidth)
-hist(depth_C,breaks=40,xlim = range_both)
-hist(depth_X,breaks=40,xlim = range_both, add=TRUE)
 ```
+
+
+```{r Cohens D}
+# Function to calculate Cohen's d
+cohens_d <- function(group1, group2) {
+    n1 <- length(group1)
+    n2 <- length(group2)
+    mean1 <- mean(group1)
+    mean2 <- mean(group2)
+    sd1 <- sd(group1)
+    sd2 <- sd(group2)
+    
+    # Pooled standard deviation
+    s_pooled <- sqrt(((n1 - 1) * sd1^2 + (n2 - 1) * sd2^2) / (n1 + n2 - 2))
+    
+    # Cohen's d
+    d <- (mean1 - mean2) / s_pooled
+    
+    return(d)
+}
+
+# Calculate Cohen's d
+d_value <- cohens_d(depth_C, depth_X)
+print(d_value)
+```
+
 
 
 ```{r Statistical Analysis ANOVA}
