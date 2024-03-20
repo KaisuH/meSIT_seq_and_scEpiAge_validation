@@ -260,6 +260,56 @@ lambda_enrichment_plot <- ggplot(combined_lambda_df, aes(x = library, y = as.num
 lambda_enrichment_plot
 ```
 
+## Read enrichment non logarithmisc scale
+
+```{r}
+#"#2978a0", "#68CBAC", "#710C32", "#fc8d62", "#F768A1", "#FDBF6F", 
+#'#88CCEE', "black", "#E41A1C", "#FF7F00","#4DAF4A", "#FFC425",
+# "#5E3C99", "#1F78B4", "grey",'#CC6677', '#332288'
+
+library(ggplot2)
+library(dplyr)
+
+# Add a library column to each dataframe
+C_data$library <- "Custom"
+X_data$library <- "xGen\nNextera"
+N_data$library <- "Control"
+
+# Combine into one dataframe
+combined_df <- rbind(C_data, X_data, N_data)
+
+# Ensure 'library' is a factor with levels in the order you want
+combined_df$library <- factor(
+  combined_df$library, 
+  levels = c("Custom", "xGen\nNextera", "Control")
+) 
+
+# Ensure 'category' is a factor if not already
+combined_df$category <- as.factor(combined_df$category)
+
+# Custom colors
+custom_colors <- c("#fc8d62", "#68CBAC", "#E41A1C","#4d4d4dff")
+
+# Plot the stacked bar plot
+read_type_plot <- ggplot(combined_df, aes(x = library, y = value, fill = category)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = custom_colors) +
+  labs(title = "Read type distribution per library",
+       #x = "Library",
+       y = "Reads",
+       fill = "Category"
+       ) +
+  scale_y_continuous(labels = scales::label_number()) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_text(angle = 0, hjust = 0.5)
+  )
+
+read_type_plot
+
+```
+
 
 
 ## Demultiplexing efficiency
@@ -314,9 +364,9 @@ colnames(library_read_depth) <- c("Custom", "xGen Nextera", "Control")
 
 plot_data<-library_read_depth%>%
   stack()%>%
-  rename(values = values, library = ind) %>%
-  mutate(library = fct_reorder(library, values, .fun = 'median'))
+  mutate(ind = fct_reorder(ind, values, .fun = 'median'))
 
+colnames(plot_data) <- c("Values","Library")
  
 average_site_read_depth=colMeans(library_read_depth)
   # Print column means
@@ -326,13 +376,14 @@ print(average_site_read_depth)
 ```{r}
 
 # Convert library to factor with custom order
-plot_data$library <- factor(plot_data$library, 
+plot_data$Library <- factor(plot_data$Library, 
                             levels = c("Custom", "xGen Nextera", "Control"))
 
 # Create the violin plot
 violin_plot<-ggplot(plot_data, 
-                    aes(x = library, y = values, fill = library)) +
-  geom_violin(trim = TRUE, 
+                    aes(x = Library, y = Values, fill = Library)) +
+  geom_violin(trim = TRUE,
+              linewidth = 0.25,
               scale = "width",
               draw_quantiles = c(0.25, 0.5, 0.75), 
               # Use a smaller bandwidth for closer density fit
@@ -341,8 +392,8 @@ violin_plot<-ggplot(plot_data,
                                "xGen Nextera" = "#a13d63", 
                                "Control" = "#fc8d62")) +
   labs(x = "Library", 
-       y = "Per million reads coverage depth", 
-       title = "Violin plot of site read depth") +
+       y = "Read depth\n(Per million reads)", 
+       title = "Clock site read depth") +
   theme_minimal() +
   theme(legend.position = "none")
 violin_plot
@@ -366,7 +417,7 @@ print(shapiro_C)
 ```
 With this small p-values we can reject the null hypothesis that the distributions are normally distributed. Therefore a non-parametric test, Wilcoxon sum, will be used. 
 ```{r wilcoxon sum test}
-wilcox_results <- wilcox.test(depth_C, depth_X, paired = FALSE, alternative="greater", exact=FALSE, conf.int = TRUE)
+wilcox_results <- wilcox.test(depth_C, depth_X, paired = TRUE, alternative="greater", exact=FALSE, conf.int = TRUE)
 wilcox_results
 
 # Since the wilcox sum coefficient considers the rank of values, the correlation test ignores the same ranks to find the p-values. Setting exact = FALSE will avoid this issue
@@ -375,16 +426,35 @@ p<-wilcox_results$p.value
 p
 p_adjusted<-p.adjust(p, method = "bonferroni", n = length(depth_X))
 p_adjusted
-
 # Set up a side-by-side layout
 par(mfrow = c(1, 2))
-
-# Specify the bin width
-binwidth <- 0.5  # Adjust this value as needed
-seq(min(depth_C), max(depth_C), by = binwidth)
-hist(depth_C,breaks=40,xlim = range_both)
-hist(depth_X,breaks=40,xlim = range_both, add=TRUE)
 ```
+
+
+```{r Cohens D}
+# Function to calculate Cohen's d
+cohens_d <- function(group1, group2) {
+    n1 <- length(group1)
+    n2 <- length(group2)
+    mean1 <- mean(group1)
+    mean2 <- mean(group2)
+    sd1 <- sd(group1)
+    sd2 <- sd(group2)
+    
+    # Pooled standard deviation
+    s_pooled <- sqrt(((n1 - 1) * sd1^2 + (n2 - 1) * sd2^2) / (n1 + n2 - 2))
+    
+    # Cohen's d
+    d <- (mean1 - mean2) / s_pooled
+    
+    return(d)
+}
+
+# Calculate Cohen's d
+d_value <- cohens_d(depth_C, depth_X)
+print(d_value)
+```
+
 
 
 ```{r Statistical Analysis ANOVA}

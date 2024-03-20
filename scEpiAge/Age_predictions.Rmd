@@ -72,17 +72,18 @@ residual_hist <- function(data){
   
 }
 
-age_pred_plot <- function(data, clock){
+age_pred_plot <- function(data, clock, point_size=3){
   # Plot actual age vs. predicted age using ggplot
   ggplot(data, aes(x = actualAge, y = predictedAge)) +
     geom_point(aes(color = TissueType, shape = TissueType), 
-               alpha=0.7, size=3) +
+               alpha=0.7, size=point_size) +
     scale_color_manual(values = c("BAT" = "#710C32", 
                                   "Blood" = "#2978a0", 
                                   "Liver" = "#68CBAC", 
                                   "scAT" = "#fc8d62")) +
     scale_shape_manual(values = c("BAT" = 19, "Blood" = 17, 
                                   "Liver" = 15, "scAT" = 8)) +
+    ylim(0,135) +
     # Add linear trendlines
     geom_smooth(aes(color=TissueType),
                 method = "lm", se = FALSE, 
@@ -181,7 +182,7 @@ IQR_ratio_histogram <- function(data, clock) {
 }
 
 # plot for comparing replicates
-replicate_boxplot <- function(data){
+replicate_boxplot <- function(data,point_size=2,point_shape=19,point_color="black"){
   
   # Extracting sample name
   pattern <- "MethRate_(\\d+_\\w+)_r\\d+.*"
@@ -203,9 +204,9 @@ replicate_boxplot <- function(data){
     distinct(sampleName, actualAge)
   
   ggplot(data, aes(x = sampleName, y = predictedAge)) +
-    geom_boxplot() +
-    geom_text(data = unique_samples, aes(label = "*", x = sampleName, y = actualAge)
-              , color="#2978a0", size=6) +
+    geom_boxplot(size=0.4) +
+    geom_point(data = unique_samples, aes(x = sampleName, y = actualAge)
+              , color=point_color, size=point_size, shape = point_shape) +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
     labs(title = "Predicted age of technical replicates",
@@ -240,16 +241,47 @@ deviation_plot(subset_blood_data, "Blood")
 
 Comparing the replicates of all the tissue samples in custom library with blood clock. 
 ```{r plot or comparing blood clock samples}
-replicate_boxplot(blood_clock_data)
+replicate_boxplot(blood_clock_data,2,20)
 ```
 
-Only blood sample coparison. Blood samples had all three replicates.
+Only blood sample comparison. All blood samples had three replicates.
 
 ```{r plot or comparing blood replicates}
-replicate_boxplot(subset_blood_data)
+replicate_boxplot(subset_blood_data, 
+                  point_size=2, 
+                  point_shape=17, 
+                  point_color="#2978a0")
 ```
-
-
+```{r plot or comparing Liver replicates}
+# Make a subset for liver sample age predictions with blood clock 
+subset_liver_data <- blood_clock_data %>%
+  subset(TissueType == "Liver")
+# Plot age deviation for this subset
+replicate_boxplot(subset_liver_data,
+                  point_size=2,
+                  point_shape=15,
+                  point_color="#68CBAC")
+```
+```{r plot or comparing scAT replicates}
+# Make a subset for scAT sample age predictions with blood clock 
+subset_scAT_data <- blood_clock_data %>%
+  subset(TissueType == "scAT")
+# Plot age deviation for this subset
+replicate_boxplot(subset_scAT_data,
+                  point_size=2,
+                  point_shape=8,
+                  point_color="#fc8d62")
+```
+```{r plot or comparing BAT replicates}
+# Make a subset for BAT sample age predictions with blood clock
+subset_BAT_data <- blood_clock_data %>%
+  subset(TissueType == "BAT")
+# Plot age deviation for this subset
+replicate_boxplot(subset_BAT_data,
+                  point_size=2,
+                  point_shape=19,
+                  point_color="#710C32")
+```
 ```{r abs error histogram blood}
 # Example usage:
 deviation_histogram(blood_clock_data, "Blood")
@@ -257,6 +289,90 @@ deviation_histogram(blood_clock_data, "Blood")
 ```
 ```{r ageDeviation blood clock data}
 deviation_plot(blood_clock_data, "Blood")
+```
+
+## Mean and median average error
+```{r}
+# Calculate mean and median error by tissue type and create df
+results <- aggregate(blood_clock_data$ageDeviation/7, 
+                     by=list(blood_clock_data$TissueType), 
+                     FUN=mean)
+colnames(results) <- c("Tissue type", "Mean age deviation\n(weeks)")
+medians <- aggregate(blood_clock_data$ageDeviation/7, 
+                     by=list(blood_clock_data$TissueType), 
+                     FUN=median)
+results$"Median age deviation\n(weeks)"<-medians$x
+
+# Mean and median error of whole dataset
+results_all<-c("All",mean(blood_clock_data$ageDeviation)/7,
+           median(blood_clock_data$ageDeviation)/7)
+results<-rbind(results, results_all)
+
+        
+print(results)
+```
+
+## Spearman and pearson correlation
+
+
+```{r}
+# Calculate Pearson and Spearman correlations for each TissueType
+pearson_correlations <- sapply(unique(blood_clock_data$TissueType), function(t) {
+    cor(blood_clock_data$predictedAge[blood_clock_data$TissueType == t], 
+        blood_clock_data$actualAge[blood_clock_data$TissueType == t], 
+        method = "pearson")
+})
+
+spearman_correlations <- sapply(unique(blood_clock_data$TissueType), function(t) {
+    cor(blood_clock_data$predictedAge[blood_clock_data$TissueType == t], 
+        blood_clock_data$actualAge[blood_clock_data$TissueType == t], 
+        method = "spearman")
+})
+
+# Add correlations to results data frame
+results$"Pearson correlation" <- pearson_correlations
+results$"Spearman correlation" <- spearman_correlations
+
+# Display the results
+print(results)
+
+```
+
+```{r}
+# Perform the Shapiro-Wilk test
+shapiro_test <- shapiro.test(blood_clock_data$predictedAge)
+
+# Print the results of the test
+print(shapiro_test)
+
+# Assess if the data is normally distributed
+if(shapiro_test$p.value > 0.05) {
+  print("Data is normally distributed")
+} else {
+  print("Data is not normally distributed")
+}
+```
+```{r}
+# Get unique tissue types
+tissue_types <- unique(blood_clock_data$TissueType)
+
+# Initialize a list to store results
+shapiro_results <- list()
+
+# Loop through each tissue type
+for(tissue in tissue_types) {
+  # Subset data for the tissue type
+  subset_data <- blood_clock_data[blood_clock_data$TissueType == tissue,]
+  
+  # Perform the Shapiro-Wilk test on age_prediction for this subset
+  shapiro_test <- shapiro.test(subset_data$predictedAge)
+  
+  # Store the results
+  shapiro_results[[tissue]] <- shapiro_test
+}
+
+# Print the results for each tissue type
+shapiro_results
 ```
 
 ### IQR analysis
@@ -277,7 +393,7 @@ liver_data <- create_predictions_df("extended_predS183_liver.txt")
 errors <- calculate_avg_errors(liver_data)
 relative_errors <- calculate_avg_relative_errors(liver_data)
 
-age_pred_plot(liver_data, "liver")
+age_pred_plot(liver_data, "liver", point_size = 2)
 ```
 
 ### Deviations
@@ -297,7 +413,7 @@ lung_data <- create_predictions_df("extended_predS183_lung.txt")
 errors <- calculate_avg_errors(lung_data)
 relative_errors <- calculate_avg_relative_errors(lung_data)
 
-age_pred_plot(lung_data, "lung")
+age_pred_plot(lung_data, "lung",point_size=2)
 ```
 
 ### Deviations
@@ -306,12 +422,14 @@ age_pred_plot(lung_data, "lung")
 deviation_plot(lung_data, "lung")
 ```
 
-# (R-squared analysis)
+# R-squared analysis
 
+In the column R-squared clock the scEpiAge R-squared is calculated on our test data. This assesses the accuracy of the model in the clock.
 
+In the column R-squared linear the R-squared for linear fit is shown. This measures how well the prediction data follows the linear model and gives an idea of the correlation between actual age and predicted age. If there is some causality between the age and measured parameters, it would be expected that the predictions follow some function. Therefore a good R-squared indicates we can improve the predictions of the clock by making a simple linear transformation and additionally we know it is measuring the correct thing.
 ```{r Rsquared analysis, echo=FALSE, warning=FALSE, message=FALSE}
 # Create a function to calculate R-squared for a specific tissue group
-calculate_r_squared <- function(data) {
+calculate_r_squared_of_clock <- function(data) {
   # Step 1 Calculate the Mean Squared Error (MSE) of your model
   mse_model <- mean((data$actualAge - data$predictedAge)^2)
 
@@ -324,8 +442,19 @@ calculate_r_squared <- function(data) {
   return(r_squared)
 }
 
+calculate_r_squared_lm <- function(data){
+  model <- lm(actualAge ~ predictedAge, data = data)
+  
+  # Summarize the model to get R-squared and other statistics
+  model_summary <- summary(model)
+  
+  # Extract R-squared value
+  r_squared <- model_summary$r.squared
+  return(r_squared)
+}
+
 # Initialize an empty list to store results
-r_squared_results_list <- list()
+r_squared_results_df <- data.frame()
 
 # Get unique tissue types
 unique_tissues <- unique(blood_clock_data$TissueType)
@@ -335,28 +464,31 @@ for (tissue in unique_tissues) {
   # Filter data for the current tissue
   current_data <- dplyr::filter(blood_clock_data, TissueType == tissue)
   
-  # Calculate R-squared for the current tissue
-  r_squared_value <- calculate_r_squared(current_data)
+  # Calculate R-squared of the clock for the current tissue
+  r_squared_value_clock <- calculate_r_squared_of_clock(current_data)
   
-  # Store the result in the list
-  r_squared_results_list[[tissue]] <- r_squared_value
+  # Calculate the R_squared of a linear fit
+  r_squared_linear <- calculate_r_squared_lm(current_data)
+  
+  # Store the result in a data frame
+  r_squared_results_df <- rbind(r_squared_results_df, data.frame(
+    Tissue = tissue,
+    `R-squared clock` = r_squared_value_clock,
+    `R-squared linear` = r_squared_linear, check.names = FALSE
+  ))
 }
 
-# Convert the list to a data frame
-r_squared_results <- data.frame(
-  R_squared = unlist(r_squared_results_list)
-)
+
 ```
 
 
 ```{r}
-# Print the summarized results
-print(r_squared_results)
+# Sort the data frame by 'R squared Linear' column in descending order
+r_squared_results_df <- r_squared_results_df[order(r_squared_results_df$`R-squared linear`, decreasing = TRUE), ]
+
+print(r_squared_results_df)
 
 ```
-
-
-
 
 
 
@@ -381,11 +513,11 @@ data_combined$clockType <- factor(data_combined$clockType, levels = c("Blood", "
 
 # Plot a boxplot
 site_plot <- ggplot(data_combined) +
-  geom_boxplot(aes(x = clockType, y = sitesUsed, fill = clockType)) +
-  labs(title = "Number of Sites Used in Predicition", fill="Clock", y="Sites Used by Clock", x="Clock type") +
+  geom_boxplot(aes(x = clockType, y = sitesUsed, fill = clockType),size=0.3,outlier.size = 0.75) +
+  labs(title = "Number of sites used in predicition", fill="Clock", y="Sites used by clock", x="Clock type") +
   scale_fill_manual(values = c("Blood" = "#2978a0", 
                                 "Liver" = "#68CBAC", 
-                                "Lung" = '#88CCEE'))+
+                                "Lung" = "#E69F00"))+
   theme_minimal()
 ```
 
@@ -405,9 +537,34 @@ venn_list <- list(
   "lung" = lung_sites
 )
 
+# Helper function to display Venn diagram
+display_venn <- function(x, ...){
+  library(VennDiagram)
+  grid.newpage()
+  venn_object <- venn.diagram(x, filename = NULL, ...)
+  grid.draw(venn_object)
+}
+
+display_venn(
+        venn_list,
+        category.names = c("Blood clock" , "Liver clock" , "Lung clock"),
+        # Circles
+        lwd = c(length(blood_sites)/length(lung_sites), length(liver_sites)/length(lung_sites), length(lung_sites)/length(lung_sites))/5,
+        lty = 'blank',
+        fill = c("#2978a0", "#68CBAC", "#E69F00"),
+        # Numbers
+        cex = .9,
+        fontface = "italic",
+        # Set names
+        cat.cex = 1,
+        #cat.fontface = "bold",
+        cat.default.pos = "outer",
+        cat.dist = c(0.065, 0.065, 0.055)
+)
 # Create the Venn diagram
 #venn <- venn.diagram(venn_list,filename = "Venn_diagram_of_clock_sites.png")
 
 ```
 
-<img src="Venn_diagram_of_clock_sites.jpg" width="400" height="400">
+
+
