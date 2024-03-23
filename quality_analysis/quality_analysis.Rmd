@@ -15,6 +15,7 @@ library(ggplot2)
 library(dplyr)
 library(gridExtra)
 library(knitr)
+library(readr)
 ```
 
 ```{r working directory}
@@ -354,6 +355,31 @@ plot_summary <- function(data, library){
 }
 ```
 
+# Tapestation of the libraries
+
+## Tapestation of final libraries
+```{r}
+# Loading the required library
+library(ggplot2)
+
+# Reading the data
+electropherogram_data <- read.csv("path_to_your_electropherogram_file.csv")
+
+# Melting the data for use with ggplot2
+library(reshape2)
+electropherogram_melted <- melt(electropherogram_data, id.vars = "SizeOrTimeColumn")
+
+# Plotting the data
+ggplot(data = electropherogram_melted, aes(x = SizeOrTimeColumn, y = value, color = variable)) +
+  geom_line() +
+  labs(x = "Size / Time Points", y = "Signal Intensity", title = "Electropherogram of Library Samples") +
+  theme_minimal() +
+  theme(legend.title = element_blank())
+
+```
+
+
+
 # Custom library Lambda
 ## M-bias
 In the M-bias plot it can be seen that the synthetic basepairs in the beginning of the reads are almost 100% methylated, as should be. The actual reads of lambda starting after the 10th bp are not methylated and this is very well reflected in the curve. The false positive bias is also decreasing towards the end of the read.
@@ -450,6 +476,280 @@ combined_plot <- grid.arrange(S183_R1_plot,
                               S183_R2_plot, 
                               ncol = 2, 
                               top = "M-bias in Custom library mouse samples")
+```
+
+# Fast QC
+
+```{r functions to plot per base qualities, echo=FALSE, message=FALSE}
+# Function to get filenames
+get_filenames <- function(directory, filepattern) {
+  # List all files in the specified directory
+  all_files <- list.files(path = directory, full.names = TRUE, recursive = TRUE)
+  # Filter files that contain library and filetype in their names
+  target_files <- grep(filepattern, all_files, value = TRUE)
+  
+  return(target_files)
+}
+
+# Function to read and extract quality scores
+read_quality_scores <- function(file_path) {
+  # Read file
+  lines <- readLines(file_path)
+  #print(lines)
+  # Find the start and end of the "Per base sequence quality" section
+  start <- which(grepl(">>Per base sequence quality", lines)) +1
+  end <- which(grepl(">>END_MODULE", lines))[2] -1
+  
+  # Extract and read the data
+  quality_data <- read.table(text = lines[start:end], header = FALSE, sep="\t", col.names = c("Base", "Mean", "Median", "LowerQuartile", "UpperQuartile", "10thPercentile", "90thPercentile"))
+  return(quality_data)
+}
+
+# Function to process multiple files and combine data
+process_files <- function(file_paths) {
+  all_data <- list()
+
+  for (file_path in file_paths) {
+    data <- read_quality_scores(file_path)
+    
+    #extract the sample name
+    extracted_name <- gsub(".*\\(.*)_fastqc_data.*", "\\1", file_path)
+
+    all_data[[extracted_name]] <- data
+  }
+  
+  all_data <- lapply(seq_along(all_data), function(i) {
+    all_data[[i]]$SampleID <- names(all_data[i])
+    all_data[[i]]$BaseNr <- as.numeric(gsub("([0-9]+)-.*", "\\1",all_data[[i]]$Base))
+    return(all_data[[i]])
+    })
+  
+  #combine into data frame
+  combined_data <- do.call(rbind, all_data)   
+  return(combined_data)
+ 
+  #return(combined_data)
+}
+
+# Plotting
+base_quality <- function(combined_data, library,datatype) {
+  colors <- c("#627db8ff", "#893454ff", "#fb5f22ff")
+  colors <- setNames(colors, c("Custom library", "xGen Nextera library", "Control library"))
+  ggplot(combined_data, aes(x = BaseNr, y = Mean, group=SampleID)) + 
+    scale_x_continuous(expand = c(0,0),limits = c(1, max(combined_data$BaseNr))) +
+    geom_rect(aes(xmin = 1, xmax = Inf, ymin = 30, ymax = Inf), fill = "#a6e0ceff") +
+    geom_line(color=colors[library]) +
+    #geom_errorbar(aes(ymin = LowerQuartile, ymax = UpperQuartile), width = 0.2) +
+    theme_minimal() +
+    ylim(0,40)+
+    labs(title = paste("Per base sequence quality",library,datatype), x = "Base position", y = "Quality score")+
+    theme(axis.text.x = element_text(angle = 0))
+}
+```
+
+# R1 Val 1
+```{r C_1_val_1}
+#192 samples * 3 libraries * 2 reads * 2 quality scorings
+# Usage with the euler exorts folde
+fqc_path <- "P:\\4Students\\KaisuHiltunen\\euler_exports\\FastQC_files\\qc_extracted_data\\"
+file_names <- get_filenames(fqc_path, filepattern="_C_1_val_1_fastqc")
+
+# Process files
+# quality_data_C_1_val_1<-quality_data
+quality_data_C_1_val_1 <- process_files(file_names)
+# Write in file
+write.table(quality_data_C_1_val_1, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_C_1_val_1.txt", 
+            sep = "\t", 
+            row.names = FALSE, 
+            col.names = TRUE)
+
+# Filter lambda
+quality_data_filtered_C <- quality_data_C_1_val_1 %>%
+  filter(!grepl("La", SampleID))
+# Plot data
+base_quality(quality_data_filtered_C, 
+             library = "Custom library", 
+             datatype = "\nR1 trimmed")
+```
+```{r X_1_val_1}
+file_names <- get_filenames(fqc_path, filepattern="_X_1_val_1_fastqc")
+
+# Process files
+#quality_data_C_1_val_1<-quality_data
+quality_data_X_1_val_1 <- process_files(file_names)
+# Write in file
+write.table(quality_data_X_1_val_1, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_X_1_val_1.txt", 
+            sep = "\t", 
+            row.names = FALSE,
+            col.names = TRUE)
+# Plot data
+base_quality(quality_data_X_1_val_1, "xGen Nextera library", "\nR1 trimmed")
+```
+```{r N_1_val_1}
+file_names <- get_filenames(fqc_path, filepattern = "_N_1_val_1_fastqc")
+
+# Process files
+quality_data_N_1_val_1 <- process_files(file_names)
+# Write in file
+write.table(quality_data_N_1_val_1, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_N_1_val_1.txt", 
+            sep = "\t", 
+            row.names = FALSE,
+            col.names = TRUE)
+
+quality_data_filtered_N <- quality_data_N_1_val_1 %>%
+  filter(!grepl("La", SampleID))
+# Plot data
+base_quality(quality_data_filtered_N, "Control library", "\nR1 trimmed")
+```
+
+## R2 val
+
+```{r control R2 val 2}
+#192 samples * 3 libraries * 2 reads * 2 quality scorings
+file_names <- get_filenames(fqc_path, filepattern="_C_2_val_2_fastqc")
+
+# Process files
+quality_data_C_2_val_2 <- process_files(file_names)
+# Write in file
+write.table(quality_data_C_2_val_2, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_C_2_val_2.txt", 
+            sep = "\t", 
+            row.names = FALSE, 
+            col.names = TRUE)
+# Plot data
+base_quality(quality_data_C_2_val_2, "Custom library", "\nR2 trimmed")
+```
+```{r library X 2_val_2 reads}
+file_names <- get_filenames(fqc_path, filepattern="_X_2_val_2_fastqc")
+
+# Process files
+quality_data_X_2_val_2 <- process_files(file_names)
+# Write in file
+write.table(quality_data_X_2_val_2, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_X_2_val_2.txt", 
+            sep = "\t", 
+            row.names = FALSE,
+            col.names = TRUE)
+# Plot data
+base_quality(quality_data_X_2_val_2, "xGen Nextera library", "\nR2 trimmed")
+```
+```{r library N 1_val_1 reads}
+file_names <- get_filenames(fqc_path, filepattern="_N_2_val_2_fastqc")
+
+# Process files
+quality_data_N_2_val_2 <- process_files(file_names)
+# Write in file
+write.table(quality_data_N_2_val_2, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_N_2_val_2.txt", 
+            sep = "\t", 
+            row.names = FALSE,
+            col.names = TRUE)
+# Plot data
+base_quality(quality_data_N_2_val_2, "Control library", "\nR2 trimmed")
+```
+
+# R1
+
+```{r}
+#192 samples * 3 libraries * 2 reads * 2 quality scorings
+file_names <- get_filenames(fqc_path, filepattern="_C_1_fastqc")
+
+# Process files
+quality_data_C_1 <- process_files(file_names)
+# Write in file
+write.table(quality_data_C_1, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_C_1.txt", 
+            sep = "\t", 
+            row.names = FALSE, 
+            col.names = TRUE)
+
+quality_data_filtered_C_1 <- quality_data_C_1 %>%
+  filter(!grepl("La", SampleID))
+# Plot data
+base_quality(quality_data_filtered_C_1, "Custom library", "\nR1")
+```
+```{r library X 1_val_1 reads}
+file_names <- get_filenames(fqc_path, filepattern="_X_1_fastqc")
+
+# Process files
+quality_data_X_1 <- process_files(file_names)
+# Write in file
+write.table(quality_data_X_1, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_X_1.txt", 
+            sep = "\t", 
+            row.names = FALSE,
+            col.names = TRUE)
+# Plot data
+base_quality(quality_data_X_1, "xGen Nextera library", "\nR1")
+```
+```{r library N 1_val_1 reads}
+file_names <- get_filenames(fqc_path, filepattern="_N_1_fastqc")
+
+# Process files
+quality_data_N_1 <- process_files(file_names)
+# Write in file
+write.table(quality_data_N_1, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_N_1.txt", 
+            sep = "\t", 
+            row.names = FALSE,
+            col.names = TRUE)
+# Plot data
+base_quality(quality_data_N_1, "Control library", "\nR1")
+```
+
+
+
+
+# R2
+
+```{r custom 2 reads}
+#192 samples * 3 libraries * 2 reads * 2 quality scorings
+file_names <- get_filenames(fqc_path, filepattern="_C_2_fastqc")
+
+# Process files
+quality_data_C_2 <- process_files(file_names)
+# Write in file
+write.table(quality_data_C_2, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_C_2.txt", 
+            sep = "\t", 
+            row.names = FALSE, 
+            col.names = TRUE)
+
+quality_data_filtered_C_2 <- quality_data_C_2 %>%
+  filter(!grepl("La", SampleID))
+# Plot data
+base_quality(quality_data_filtered_C_2, "Custom library", "\nR2")
+```
+```{r xGen 2 reads}
+file_names <- get_filenames(fqc_path, filepattern="_X_2_fastqc")
+
+# Process files
+quality_data_X_2 <- process_files(file_names)
+# Write in file
+write.table(quality_data_X_2, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_X_2.txt", 
+            sep = "\t", 
+            row.names = FALSE,
+            col.names = TRUE)
+# Plot data
+base_quality(quality_data_X_2, "xGen Nextera library", "\nR2")
+```
+```{r Control 2 reads}
+file_names <- get_filenames(fqc_path, filepattern="_N_2_fastqc")
+
+# Process files
+quality_data_N_2 <- process_files(file_names)
+# Write in file
+write.table(quality_data_N_2, 
+            file = "Data/QC_files/FastQC_files/per_base_quality_N_2.txt", 
+            sep = "\t", 
+            row.names = FALSE,
+            col.names = TRUE)
+# Plot data
+base_quality(quality_data_N_2, "Control library", "\nR2")
 ```
 
 ## Sample alignment in Custom library
