@@ -16,6 +16,8 @@ library(dplyr)
 library(gridExtra)
 library(knitr)
 library(readr)
+library(reshape2)# Melting the data for use with ggplot2
+library(pracma)  # For finding peaks
 ```
 
 ```{r working directory}
@@ -358,27 +360,138 @@ plot_summary <- function(data, library){
 # Tapestation of the libraries
 
 ## Tapestation of final libraries
+
+After enrichment (Control no enrichment):
 ```{r}
-# Loading the required library
-library(ggplot2)
 
 # Reading the data
-electropherogram_data <- read.csv("path_to_your_electropherogram_file.csv")
+electropherogram_data <- read.csv("Data\\Tapestation\\Tapestation_Library_samples_Electropherogram.csv", check.names = FALSE)
+# Assuming each row corresponds to a sequential size or time point
+electropherogram_data$Size <- 1:nrow(electropherogram_data)
 
-# Melting the data for use with ggplot2
-library(reshape2)
-electropherogram_melted <- melt(electropherogram_data, id.vars = "SizeOrTimeColumn")
+electropherogram_melted <- melt(electropherogram_data[2:5], id.vars = "Size")
 
+
+get_ladder_peaks <- function(electropherogram_data){
+  # Known ladder sizes and their corresponding positions
+  # Replace PeakPositions with your actual data
+  known_sizes <- c(15, 100, 250, 400, 600, 1000, 1500, 2500, 3500, 5000, 10000)
+  # Assuming your ladder data is in the first column, adjust if needed
+  ladder_signal <- as.numeric(electropherogram_data[[1]])
+  
+  # Smooth the signal to reduce noise before finding peaks
+  # Adjust the span as needed for your data
+  smoothed_signal <- c(smooth(ladder_signal))
+  
+  # Finding peaks - adjust the threshold as necessary
+  # The 'nups' and 'ndowns' define the sensitivity of peak detection
+  peaks <- pracma::findpeaks(smoothed_signal, npeaks=11, sortstr = FALSE)
+  
+  # Filtering peaks based on a threshold - adjust as necessary
+  # This threshold depends on your data's specific characteristics
+  threshold <- mean(smoothed_signal) + sd(smoothed_signal)
+  significant_peaks <- peaks[peaks[, 2] > threshold, ]
+  
+  # Extracting the positions of the significant peaks
+  peak_positions <- significant_peaks[, 1]
+  # A function to find peaks manually
+  # Calculate the gradient (first derivative)
+  gradient <- diff(smoothed_signal, differences = 1)
+  
+  # Find where the gradient changes sign (zero-crossings could indicate peaks)
+  zero_gradient_positions <-which(diff(sign(gradient)) != 0)
+  # Adjust the positions to account for the length difference caused by diff
+  adjusted_positions <- zero_gradient_positions + 1
+  
+  # Filter these positions for signal values greater than 100
+  significant_positions <- adjusted_positions[ladder_signal[adjusted_positions] > 100]
+  # Adjust the range to your specific requirements
+  peak_range <- 20
+  # Initialize an empty vector to store the filtered positions
+  filtered_positions <- numeric()
+  # Iterate through the significant positions
+  for (position in significant_positions) {
+      # Define the range to search for neighboring peaks
+      lower_bound <- max(position - peak_range, 1)
+      upper_bound <- min(position + peak_range, length(ladder_signal))
+  
+      # Find the highest peak within this range
+      range_peaks <- significant_positions[significant_positions >= lower_bound & significant_positions <= upper_bound]
+      if (length(range_peaks) > 0) {
+          highest_peak_position <- range_peaks[which.max(ladder_signal[range_peaks])]
+          
+          # Add the highest peak to the filtered list if it's not already included
+          if (!(highest_peak_position %in% filtered_positions)) {
+              filtered_positions <- c(filtered_positions, highest_peak_position)
+          }
+      }
+  }
+  
+  significant_breaks <- list()
+  significant_labels <- list()
+  for (i in 1:length(filtered_positions)) {
+      significant_breaks[[i]] <- filtered_positions[i]
+      significant_labels[[i]] <- known_sizes[i]
+  }
+  return(list(significant_breaks=significant_breaks, significant_labels=significant_labels))
+}
+
+results <-get_ladder_peaks(electropherogram_data)
+significant_breaks <- results$significant_breaks
+significant_labels <- results$significant_labels
 # Plotting the data
-ggplot(data = electropherogram_melted, aes(x = SizeOrTimeColumn, y = value, color = variable)) +
-  geom_line() +
-  labs(x = "Size / Time Points", y = "Signal Intensity", title = "Electropherogram of Library Samples") +
+Library_electropherogram<-ggplot(data = electropherogram_melted, aes(x = Size, y = value, color = variable)) +
+  geom_line()+
+  scale_x_continuous(breaks = unlist(significant_breaks), labels = unlist(significant_labels),expand = c(0,0)) +
+  scale_color_manual(values = c(
+        "#8da0cb","#a13d63","#fc8d62"))+
+  labs(x = "Size (bp)", y = "Signal Intensity", title = "Electropherogram after enrichment", color="Library") +
   theme_minimal() +
-  theme(legend.title = element_blank())
+  ylim(0,600)+
+  guides(color = guide_legend(nrow = 1, title.position = "top"))+
+  theme(legend.title = element_text(size = 12),
+        axis.text.x = element_text(angle=90, vjust=0.5),
+        legend.position = "bottom",
+        legend.title.align = 0.5)
+        
 
+Library_electropherogram
 ```
+After tagmentation and repair:
+
+```{r}
+# Reading the data
+electropherogram_data <- read.csv("Data\\Tapestation\\Library_after_tagmentation_Electropherogram.csv", check.names = FALSE)
+# Assuming each row corresponds to a sequential size or time point
+electropherogram_data$Size <- 1:nrow(electropherogram_data)
+electropherogram_data <- electropherogram_data[order(names(electropherogram_data))]
+electropherogram_melted <- melt(electropherogram_data[2:6], id.vars = "Size")
 
 
+results <-get_ladder_peaks(electropherogram_data)
+significant_breaks <- results$significant_breaks
+significant_labels <- results$significant_labels
+# Plotting the data
+Library_electropherogram<-ggplot(data = electropherogram_melted, aes(x = Size, y = value, color = variable)) +
+  geom_line()+
+  scale_x_continuous(breaks = unlist(significant_breaks), labels = unlist(significant_labels),expand = c(0,0)) +
+  scale_color_manual(values = c("#68CBAC","#4DAF4A","#FFC425","#FDBF6F"))+
+  labs(x = "Size (bp)", y = "Signal Intensity", title = "Electropherogram after repair", color="Library") +
+  theme_minimal() +
+  ylim(0,600)+
+  guides(color = guide_legend(ncol = 2, byrow = TRUE))+
+  theme(legend.title = element_blank(),
+        axis.text.x = element_text(angle=90, vjust=0.5),
+        legend.position = "bottom",
+        legend.justification = "left", 
+        legend.box = "horizontal"
+        
+        )
+
+
+
+Library_electropherogram
+```
 
 # Custom library Lambda
 ## M-bias
